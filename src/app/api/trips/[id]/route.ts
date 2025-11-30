@@ -51,7 +51,7 @@ export async function GET(
     // Fetch booked seats for this trip
     const { data: bookings, error: bookingError } = await supabase
       .from('bookings')
-      .select('selected_seats')
+      .select('seat_numbers')
       .eq('trip_id', id)
       .eq('status', 'confirmed')
 
@@ -62,8 +62,8 @@ export async function GET(
     // Extract booked seat numbers
     const bookedSeats: string[] = []
     bookings?.forEach(booking => {
-      if (booking.selected_seats) {
-        bookedSeats.push(...booking.selected_seats)
+      if (booking.seat_numbers) {
+        bookedSeats.push(...booking.seat_numbers)
       }
     })
 
