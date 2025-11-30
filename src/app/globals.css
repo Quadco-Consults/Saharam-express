@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Saharam Express Brand Colors */
+:root {
+  --saharam-primary: #d4741e;
+  --saharam-primary-dark: #a54513;
+  --saharam-gold: #e9b577;
+  --saharam-light: #f9ead6;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--saharam-primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--saharam-primary-dark);
+}
