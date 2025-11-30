@@ -1,0 +1,253 @@
+'use client'
+import { useState, useEffect } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
+import { ArrowLeft, Search, Calendar, MapPin, Users } from 'lucide-react'
+import Header from '@/components/Header'
+import TripCard from '@/components/TripCard'
+import { useAuth } from '@/hooks/useAuth'
+import AuthModal from '@/components/AuthModal'
+import { Trip } from '@/types'
+import { formatDate } from '@/utils/formatters'
+
+interface SearchResults {
+  trips: (Trip & {
+    route: {
+      from_city: string
+      to_city: string
+      distance: number
+      estimated_duration: number
+    }
+    vehicle: {
+      plate_number: string
+      model: string
+      capacity: number
+    }
+    driver: {
+      first_name: string
+      last_name: string
+    }
+  })[]
+  totalCount: number
+  searchCriteria: {
+    from: string
+    to: string
+    date: string
+    passengers: number
+  }
+}
+
+export default function SearchPage() {
+  const [searchResults, setSearchResults] = useState<SearchResults | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [selectedTrip, setSelectedTrip] = useState<any>(null)
+  const [showAuthModal, setShowAuthModal] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const { isAuthenticated } = useAuth()
+
+  const from = searchParams.get('from') || 'Kano'
+  const to = searchParams.get('to') || 'Kaduna'
+  const date = searchParams.get('date') || ''
+  const passengers = parseInt(searchParams.get('passengers') || '1')
+
+  useEffect(() => {
+    if (from && to && date) {
+      searchTrips()
+    }
+  }, [from, to, date, passengers])
+
+  const searchTrips = async () => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      const queryParams = new URLSearchParams({
+        from,
+        to,
+        date,
+        passengers: passengers.toString()
+      })
+
+      const response = await fetch(`/api/trips/search?${queryParams}`)
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to search trips')
+      }
+
+      setSearchResults(data.data)
+    } catch (error: any) {
+      console.error('Search error:', error)
+      setError(error.message || 'Failed to search for trips')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleTripSelect = (trip: any) => {
+    if (!isAuthenticated) {
+      setSelectedTrip(trip)
+      setShowAuthModal(true)
+      return
+    }
+
+    // Navigate to booking page
+    router.push(`/book?trip=${trip.id}`)
+  }
+
+  const handleBackToSearch = () => {
+    router.push('/#search')
+  }
+
+  const handleNewSearch = () => {
+    router.push('/#search')
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+
+      <div className="container mx-auto px-6 py-8">
+        {/* Search Header */}
+        <div className="flex items-center gap-4 mb-8">
+          <button
+            onClick={handleBackToSearch}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Available Trips</h1>
+            <p className="text-gray-600">
+              {from} → {to} • {date ? formatDate(date) : ''} • {passengers} passenger{passengers > 1 ? 's' : ''}
+            </p>
+          </div>
+        </div>
+
+        {/* Search Summary Card */}
+        <div className="bg-white rounded-xl p-6 mb-8 border border-gray-200">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-saharam-500" />
+                <span className="font-medium">{from} → {to}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-saharam-500" />
+                <span className="font-medium">{date ? formatDate(date) : ''}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Users className="w-5 h-5 text-saharam-500" />
+                <span className="font-medium">{passengers} passenger{passengers > 1 ? 's' : ''}</span>
+              </div>
+            </div>
+            <button
+              onClick={handleNewSearch}
+              className="flex items-center gap-2 px-4 py-2 border border-saharam-300 text-saharam-600 rounded-lg hover:bg-saharam-50 transition-colors"
+            >
+              <Search className="w-4 h-4" />
+              New Search
+            </button>
+          </div>
+        </div>
+
+        {/* Results */}
+        {loading ? (
+          <div className="space-y-6">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="bg-white rounded-xl p-6 animate-pulse">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="space-y-3">
+                    <div className="h-4 bg-gray-300 rounded w-48"></div>
+                    <div className="h-3 bg-gray-300 rounded w-32"></div>
+                  </div>
+                  <div className="h-8 bg-gray-300 rounded w-24"></div>
+                </div>
+                <div className="grid grid-cols-3 gap-4 mb-4">
+                  {[1, 2, 3].map(j => (
+                    <div key={j} className="text-center space-y-2">
+                      <div className="h-3 bg-gray-300 rounded w-16 mx-auto"></div>
+                      <div className="h-4 bg-gray-300 rounded w-12 mx-auto"></div>
+                    </div>
+                  ))}
+                </div>
+                <div className="h-2 bg-gray-300 rounded mb-4"></div>
+                <div className="h-3 bg-gray-300 rounded w-40"></div>
+              </div>
+            ))}
+          </div>
+        ) : error ? (
+          <div className="bg-white rounded-xl p-12 text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Search className="w-8 h-8 text-red-500" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Search Failed</h3>
+            <p className="text-gray-600 mb-6">{error}</p>
+            <button
+              onClick={searchTrips}
+              className="px-6 py-3 bg-saharam-500 text-white rounded-lg hover:bg-saharam-600 transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
+        ) : searchResults && searchResults.trips.length > 0 ? (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <p className="text-gray-600">
+                Found {searchResults.totalCount} trip{searchResults.totalCount !== 1 ? 's' : ''}
+              </p>
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <span>Sort by:</span>
+                <select className="border border-gray-300 rounded px-3 py-1 text-sm focus:ring-2 focus:ring-saharam-500 focus:border-transparent">
+                  <option value="departure">Departure Time</option>
+                  <option value="price">Price</option>
+                  <option value="duration">Duration</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid gap-6">
+              {searchResults.trips.map((trip) => (
+                <TripCard
+                  key={trip.id}
+                  trip={trip}
+                  onSelect={handleTripSelect}
+                  isSelected={selectedTrip?.id === trip.id}
+                />
+              ))}
+            </div>
+          </div>
+        ) : searchResults ? (
+          <div className="bg-white rounded-xl p-12 text-center">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Search className="w-8 h-8 text-gray-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">No Trips Found</h3>
+            <p className="text-gray-600 mb-6">
+              We couldn't find any available trips for your search criteria.
+              Try adjusting your dates or passenger count.
+            </p>
+            <button
+              onClick={handleNewSearch}
+              className="px-6 py-3 bg-saharam-500 text-white rounded-lg hover:bg-saharam-600 transition-colors"
+            >
+              Modify Search
+            </button>
+          </div>
+        ) : null}
+      </div>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => {
+          setShowAuthModal(false)
+          setSelectedTrip(null)
+        }}
+        mode="signin"
+      />
+    </div>
+  )
+}

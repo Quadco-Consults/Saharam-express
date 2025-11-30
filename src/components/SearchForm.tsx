@@ -20,8 +20,23 @@ export default function SearchForm() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: Implement search functionality
-    console.log('Search:', formData)
+
+    // Validate departure date
+    if (!formData.departureDate) {
+      alert('Please select a departure date')
+      return
+    }
+
+    // Create search URL
+    const searchParams = new URLSearchParams({
+      from: formData.from,
+      to: formData.to,
+      date: formData.departureDate,
+      passengers: formData.passengers.toString()
+    })
+
+    // Navigate to search page
+    window.location.href = `/search?${searchParams.toString()}`
   }
 
   return (
