@@ -20,7 +20,7 @@ interface TripCardProps {
     driver: {
       first_name: string
       last_name: string
-    }
+    } | null
   }
   onSelect: (trip: any) => void
   isSelected?: boolean
@@ -131,7 +131,7 @@ export default function TripCard({ trip, onSelect, isSelected = false }: TripCar
       <div className="flex items-center justify-between text-sm">
         <div className="text-gray-600">
           Driver: <span className="font-medium text-gray-900">
-            {trip.driver.first_name} {trip.driver.last_name}
+            {trip.driver ? `${trip.driver.first_name} ${trip.driver.last_name}` : 'To be assigned'}
           </span>
         </div>
 

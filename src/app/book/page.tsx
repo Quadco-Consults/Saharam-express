@@ -45,7 +45,7 @@ interface TripDetails extends Trip {
   driver: {
     first_name: string
     last_name: string
-  }
+  } | null
   bookedSeats: string[]
 }
 
