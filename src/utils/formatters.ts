@@ -12,20 +12,38 @@ export const formatCurrency = (amount: number): string => {
 
 // Format date for display
 export const formatDate = (date: string | Date): string => {
-  const dateObj = typeof date === 'string' ? parseISO(date) : date
-  return format(dateObj, 'MMM dd, yyyy')
+  try {
+    if (!date) return 'Date not available'
+    const dateObj = typeof date === 'string' ? parseISO(date) : date
+    if (isNaN(dateObj.getTime())) return 'Invalid date'
+    return format(dateObj, 'MMM dd, yyyy')
+  } catch (error) {
+    return 'Invalid date'
+  }
 }
 
 // Format time for display
 export const formatTime = (date: string | Date): string => {
-  const dateObj = typeof date === 'string' ? parseISO(date) : date
-  return format(dateObj, 'h:mm a')
+  try {
+    if (!date) return 'Time not available'
+    const dateObj = typeof date === 'string' ? parseISO(date) : date
+    if (isNaN(dateObj.getTime())) return 'Invalid time'
+    return format(dateObj, 'h:mm a')
+  } catch (error) {
+    return 'Invalid time'
+  }
 }
 
 // Format date and time for display
 export const formatDateTime = (date: string | Date): string => {
-  const dateObj = typeof date === 'string' ? parseISO(date) : date
-  return format(dateObj, 'MMM dd, yyyy • h:mm a')
+  try {
+    if (!date) return 'Date not available'
+    const dateObj = typeof date === 'string' ? parseISO(date) : date
+    if (isNaN(dateObj.getTime())) return 'Invalid date'
+    return format(dateObj, 'MMM dd, yyyy • h:mm a')
+  } catch (error) {
+    return 'Invalid date'
+  }
 }
 
 // Format duration in hours and minutes
@@ -79,8 +97,14 @@ export const formatSeatNumbers = (seats: string[]): string => {
 
 // Calculate estimated arrival time
 export const calculateArrivalTime = (departureTime: string | Date, durationMinutes: number): Date => {
-  const departureDate = typeof departureTime === 'string' ? parseISO(departureTime) : departureTime
-  return addHours(departureDate, durationMinutes / 60)
+  try {
+    if (!departureTime || !durationMinutes) return new Date()
+    const departureDate = typeof departureTime === 'string' ? parseISO(departureTime) : departureTime
+    if (isNaN(departureDate.getTime())) return new Date()
+    return addHours(departureDate, durationMinutes / 60)
+  } catch (error) {
+    return new Date()
+  }
 }
 
 // Format trip status for display

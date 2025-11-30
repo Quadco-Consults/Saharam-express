@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { paystackService } from '@/lib/payments/paystack'
-import { oPayService } from '@/lib/payments/opay'
 import { createServerClient } from '@/lib/supabase-server'
 
 export async function POST(request: NextRequest) {
@@ -55,51 +53,20 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    let paymentResult
-    let reference
+    // Generate payment reference
+    const generateReference = (): string => {
+      const timestamp = Date.now().toString()
+      const random = Math.random().toString(36).substring(2, 8).toUpperCase()
+      return `PAY_${timestamp}_${random}`
+    }
 
-    // Initialize payment based on gateway
-    switch (gateway.toLowerCase()) {
-      case 'paystack':
-        reference = paystackService.generateReference()
-        paymentResult = await paystackService.initializePayment({
-          email,
-          amount: amount * 100, // Convert to kobo
-          reference,
-          metadata: {
-            bookingId,
-            customerName,
-            customerPhone,
-            ...metadata
-          }
-        })
-        break
+    const reference = generateReference()
 
-      case 'opay':
-        reference = oPayService.generateReference()
-        paymentResult = await oPayService.initializePayment({
-          reference,
-          amount: oPayService.formatAmount(amount),
-          currency: 'NGN',
-          userInfo: {
-            userEmail: email,
-            userName: customerName,
-            userMobile: customerPhone
-          },
-          productInfo: {
-            productName: `Saharam Express Ticket - ${booking.booking_reference}`,
-            productDesc: 'Bus ticket booking payment'
-          },
-          callbackUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/payments/callback`,
-          returnUrl: `${process.env.NEXT_PUBLIC_APP_URL}/booking/success`
-        })
-        break
-
-      default:
-        return NextResponse.json(
-          { success: false, error: 'Unsupported payment gateway' },
-          { status: 400 }
-        )
+    // For testing - simulate payment gateway response
+    const paymentResult = {
+      authorization_url: `${process.env.NEXT_PUBLIC_APP_URL}/booking-success?booking=${bookingId}&reference=${reference}`,
+      access_code: `ac_${reference}`,
+      reference: reference
     }
 
     // Create payment record

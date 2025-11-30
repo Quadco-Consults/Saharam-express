@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { User, Steering } from 'lucide-react'
+import { User, Car } from 'lucide-react'
 import { cn } from '@/utils/cn'
 
 interface SeatMapProps {
@@ -127,7 +127,7 @@ export default function SeatMap({
         {/* Driver Section */}
         <div className="mb-6 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg">
-            <Steering className="w-5 h-5 text-gray-600" />
+            <Car className="w-5 h-5 text-gray-600" />
             <span className="text-sm font-medium text-gray-700">Driver</span>
           </div>
         </div>

@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
       .select(`
         *,
         route:routes(*),
-        bookings(seat_numbers, status, payment_status)
+        bookings(selected_seats, status, payment_status)
       `)
       .eq('id', tripId)
       .single()
@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
     const bookedSeats: string[] = []
     trip.bookings?.forEach((booking: any) => {
       if (booking.status === 'confirmed' && booking.payment_status === 'paid') {
-        bookedSeats.push(...booking.seat_numbers)
+        bookedSeats.push(...booking.selected_seats)
       }
     })
 
@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
         trip_id: tripId,
         passenger_name: passengerName,
         passenger_phone: passengerPhone,
-        seat_numbers: selectedSeats,
+        selected_seats: selectedSeats,
         total_amount: totalAmount,
         booking_reference: generateBookingReference(),
         payment_status: 'pending',

@@ -6,61 +6,89 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const tripId = params.id
-
-    if (!tripId) {
-      return NextResponse.json(
-        { success: false, error: 'Trip ID is required' },
-        { status: 400 }
-      )
-    }
-
     const supabase = createServerClient()
+    const { id } = params
 
-    // Get trip details with related data
-    const { data: trip, error: tripError } = await supabase
+    // Fetch trip details with related data
+    const { data: trip, error } = await supabase
       .from('trips')
       .select(`
         *,
-        route:routes(*),
-        vehicle:vehicles(*),
-        driver:users!trips_driver_id_fkey(first_name, last_name),
-        bookings(seat_numbers, status, payment_status)
+        route:routes (
+          from_city,
+          to_city,
+          distance,
+          estimated_duration
+        ),
+        vehicle:vehicles (
+          plate_number,
+          model,
+          capacity
+        ),
+        driver:users!trips_driver_id_fkey (
+          first_name,
+          last_name
+        )
       `)
-      .eq('id', tripId)
+      .eq('id', id)
       .single()
 
-    if (tripError || !trip) {
+    if (error) {
+      console.error('Error fetching trip:', error)
       return NextResponse.json(
-        { success: false, error: 'Trip not found' },
+        { error: 'Failed to fetch trip details', details: error.message },
+        { status: 500 }
+      )
+    }
+
+    if (!trip) {
+      return NextResponse.json(
+        { error: 'Trip not found' },
         { status: 404 }
       )
     }
 
-    // Calculate booked seats from all confirmed bookings
-    const bookedSeats: string[] = []
+    // Fetch booked seats for this trip
+    const { data: bookings, error: bookingError } = await supabase
+      .from('bookings')
+      .select('selected_seats')
+      .eq('trip_id', id)
+      .eq('status', 'confirmed')
 
-    trip.bookings?.forEach((booking: any) => {
-      if (booking.status === 'confirmed' && booking.payment_status === 'paid') {
-        bookedSeats.push(...booking.seat_numbers)
+    if (bookingError) {
+      console.error('Error fetching bookings:', bookingError)
+    }
+
+    // Extract booked seat numbers
+    const bookedSeats: string[] = []
+    bookings?.forEach(booking => {
+      if (booking.selected_seats) {
+        bookedSeats.push(...booking.selected_seats)
       }
     })
 
-    // Remove bookings from response for security
-    const { bookings, ...tripData } = trip
+    // Calculate pricing
+    const basePrice = trip.base_price || 4500 // Default price if not set
+    const totalSeats = trip.total_seats || trip.vehicle?.capacity || 40
+
+    const tripDetails = {
+      ...trip,
+      basePrice,
+      totalSeats,
+      bookedSeats,
+      departureTime: trip.departure_time,
+      arrivalTime: trip.arrival_time
+    }
 
     return NextResponse.json({
       success: true,
-      data: {
-        ...tripData,
-        bookedSeats: [...new Set(bookedSeats)] // Remove duplicates
-      }
+      data: tripDetails
     })
 
-  } catch (error) {
-    console.error('Trip fetch error:', error)
+  } catch (error: any) {
+    console.error('API Error:', error)
     return NextResponse.json(
-      { success: false, error: 'Internal server error' },
+      { error: 'Internal server error', details: error.message },
       { status: 500 }
     )
   }
