@@ -66,12 +66,16 @@ export default function AuthModal({ isOpen, onClose, mode = 'signin' }: AuthModa
 
     if (error) {
       setMessage({ type: 'error', text: error.message })
+      setIsSubmitting(false)
     } else {
       setMessage({ type: 'success', text: 'Successfully signed in!' })
-      setTimeout(() => onClose(), 1500)
+      // Close modal immediately on successful login
+      setTimeout(() => {
+        onClose()
+        // Force page refresh to ensure auth state is properly loaded
+        window.location.reload()
+      }, 1000)
     }
-
-    setIsSubmitting(false)
   }
 
   const handleSignup = async (data: SignupFormData) => {

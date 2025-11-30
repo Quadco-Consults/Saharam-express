@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { paystackService } from '@/lib/payments/paystack'
 import { oPayService } from '@/lib/payments/opay'
-import { createServerClient } from '@/lib/supabase'
+import { createServerClient } from '@/lib/supabase-server'
 
 export async function POST(request: NextRequest) {
   try {

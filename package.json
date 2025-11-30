@@ -9,31 +9,36 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.9.0",
+    "@supabase/ssr": "^0.5.2",
+    "@supabase/supabase-js": "^2.45.4",
+    "@types/nodemailer": "^7.0.4",
+    "@types/qrcode": "^1.5.6",
+    "axios": "^1.13.2",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "dotenv": "^17.2.3",
+    "html5-qrcode": "^2.3.8",
+    "lucide-react": "^0.447.0",
     "next": "15.0.3",
+    "nodemailer": "^7.0.11",
+    "qrcode": "^1.5.4",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "@supabase/supabase-js": "^2.45.4",
-    "@supabase/ssr": "^0.5.2",
-    "lucide-react": "^0.447.0",
-    "clsx": "^2.1.1",
-    "tailwind-merge": "^2.5.4",
     "react-hook-form": "^7.53.1",
-    "@hookform/resolvers": "^3.9.0",
-    "zod": "^3.23.8",
-    "date-fns": "^4.1.0",
-    "qrcode": "^1.5.4",
-    "@types/qrcode": "^1.5.5",
-    "sonner": "^1.5.0"
+    "sonner": "^1.5.0",
+    "tailwind-merge": "^2.5.4",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^22.9.1",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "autoprefixer": "^10.4.20",
     "eslint": "^9.15.0",
     "eslint-config-next": "15.0.3",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.14",
-    "typescript": "^5.6.3",
-    "autoprefixer": "^10.4.20"
+    "typescript": "^5.6.3"
   }
 }
