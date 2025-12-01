@@ -50,7 +50,8 @@ fi
 
 # Push to GitHub
 echo "📤 Pushing to GitHub..."
-git push origin develop
+CURRENT_BRANCH=$(git branch --show-current)
+git push origin $CURRENT_BRANCH
 
 echo -e "${BLUE}🎯 Ready to deploy to Vercel!${NC}"
 echo
