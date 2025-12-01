@@ -85,13 +85,13 @@ function SearchContent() {
     }
 
     // Navigate to booking page for authenticated users
-    router.push(`/book?trip=${trip.id}`)
+    router.push(`/book?tripId=${trip.id}`)
   }
 
   const handleGuestBooking = () => {
     if (selectedTrip) {
       // Navigate to booking page with guest flag
-      router.push(`/book?trip=${selectedTrip.id}&guest=true`)
+      router.push(`/book?tripId=${selectedTrip.id}&guest=true`)
       setShowBookingOptions(false)
       setSelectedTrip(null)
     }
@@ -106,7 +106,7 @@ function SearchContent() {
   const handleAuthSuccess = () => {
     // After successful authentication, proceed to booking
     if (selectedTrip) {
-      router.push(`/book?trip=${selectedTrip.id}`)
+      router.push(`/book?tripId=${selectedTrip.id}`)
       setShowAuthModal(false)
       setSelectedTrip(null)
     }

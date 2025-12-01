@@ -83,7 +83,7 @@ function BookContent() {
   const router = useRouter()
   const { user } = useAuth()
 
-  const tripId = searchParams.get('trip')
+  const tripId = searchParams.get('tripId') || searchParams.get('trip')
 
   const { register, handleSubmit, formState: { errors }, setValue } = useForm<BookingFormData>({
     resolver: zodResolver(bookingSchema),
