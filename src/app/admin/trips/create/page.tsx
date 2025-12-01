@@ -76,10 +76,15 @@ export default function CreateTripPage() {
 
   const fetchFormData = async () => {
     try {
+      const token = localStorage.getItem('auth_token')
+      const headers = {
+        'Authorization': `Bearer ${token}`
+      }
+
       const [routesRes, vehiclesRes, driversRes] = await Promise.all([
-        fetch('/api/admin/routes'),
-        fetch('/api/admin/vehicles'),
-        fetch('/api/admin/drivers')
+        fetch('/api/admin/routes', { headers }),
+        fetch('/api/admin/vehicles', { headers }),
+        fetch('/api/admin/drivers', { headers })
       ])
 
       const [routesData, vehiclesData, driversData] = await Promise.all([
@@ -103,9 +108,13 @@ export default function CreateTripPage() {
     setIsSubmitting(true)
 
     try {
+      const token = localStorage.getItem('auth_token')
       const response = await fetch('/api/admin/trips', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(data)
       })
 
