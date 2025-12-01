@@ -35,25 +35,33 @@ type BookingFormData = z.infer<typeof bookingSchema>
 interface TripDetails {
   id: string
   route: {
-    from_city: string
-    to_city: string
+    fromCity: string
+    toCity: string
     distance: number
-    estimated_duration: number
+    estimatedDuration: number
+    basePrice: number
   }
-  departure_time: string
-  arrival_time: string
-  base_price: number
-  total_seats: number
-  available_seats: number
-  bookedSeats: string[]
+  schedule: {
+    departureTime: string
+    arrivalTime: string
+    isActive: boolean
+  }
+  pricing: {
+    basePrice: number
+    currency: string
+  }
+  seats: {
+    total: number
+    available: number
+    bookedSeatNumbers: string[]
+  }
   vehicle: {
-    plate_number: string
+    plateNumber: string
     model: string
     capacity: number
   }
   driver: {
-    first_name: string
-    last_name: string
+    name: string
   } | null
 }
 
@@ -155,7 +163,7 @@ function BookContent() {
           passengerPhone: bookingData.passengerPhone,
           passengerEmail: bookingData.passengerEmail,
           selectedSeats,
-          totalAmount: tripDetails.base_price * selectedSeats.length
+          totalAmount: tripDetails.pricing.basePrice * selectedSeats.length
         })
       })
 
@@ -172,7 +180,7 @@ function BookContent() {
         body: JSON.stringify({
           gateway: 'paystack', // Default to Paystack
           bookingId: bookingResult.data.booking.id,
-          amount: tripDetails.base_price * selectedSeats.length,
+          amount: tripDetails.pricing.basePrice * selectedSeats.length,
           email: bookingData.passengerEmail,
           customerName: bookingData.passengerName,
           customerPhone: bookingData.passengerPhone,
@@ -197,7 +205,7 @@ function BookContent() {
     }
   }
 
-  const totalAmount = tripDetails ? tripDetails.base_price * selectedSeats.length : 0
+  const totalAmount = tripDetails ? tripDetails.pricing.basePrice * selectedSeats.length : 0
 
   if (loading) {
     return (
@@ -268,7 +276,7 @@ function BookContent() {
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Complete Your Booking</h1>
               <p className="text-gray-600">
-                {tripDetails.route.from_city} → {tripDetails.route.to_city}
+                {tripDetails.route.fromCity} → {tripDetails.route.toCity}
               </p>
             </div>
           </div>
@@ -306,8 +314,8 @@ function BookContent() {
             <div className="lg:col-span-2">
               {step === 'seats' && (
                 <SeatMap
-                  totalSeats={tripDetails.total_seats}
-                  bookedSeats={tripDetails.bookedSeats}
+                  totalSeats={tripDetails.seats.total}
+                  bookedSeats={tripDetails.seats.bookedSeatNumbers}
                   selectedSeats={selectedSeats}
                   onSeatSelect={handleSeatSelect}
                   maxSeats={4}
@@ -404,10 +412,10 @@ function BookContent() {
                     <MapPin className="w-5 h-5 text-gray-400 mt-0.5" />
                     <div>
                       <p className="font-medium text-gray-900">
-                        {tripDetails.route.from_city} → {tripDetails.route.to_city}
+                        {tripDetails.route.fromCity} → {tripDetails.route.toCity}
                       </p>
                       <p className="text-sm text-gray-600">
-                        {tripDetails.vehicle.model} • {tripDetails.vehicle.plate_number}
+                        {tripDetails.vehicle.model} • {tripDetails.vehicle.plateNumber}
                       </p>
                     </div>
                   </div>
@@ -416,7 +424,7 @@ function BookContent() {
                     <Clock className="w-5 h-5 text-gray-400 mt-0.5" />
                     <div>
                       <p className="font-medium text-gray-900">
-                        {formatDateTime(tripDetails.departure_time)}
+                        {formatDateTime(tripDetails.schedule.departureTime)}
                       </p>
                       <p className="text-sm text-gray-600">Departure</p>
                     </div>
@@ -441,7 +449,7 @@ function BookContent() {
                 <div className="border-t border-gray-200 pt-4 space-y-2">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Price per seat</span>
-                    <span className="font-medium">{formatCurrency(tripDetails.base_price)}</span>
+                    <span className="font-medium">{formatCurrency(tripDetails.pricing.basePrice)}</span>
                   </div>
                   {selectedSeats.length > 0 && (
                     <div className="flex justify-between">

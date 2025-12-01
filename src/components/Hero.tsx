@@ -3,6 +3,13 @@ import { Car, Star, Shield, Clock } from 'lucide-react'
 import Image from 'next/image'
 
 export default function Hero() {
+  const handleBookTripClick = () => {
+    const searchSection = document.getElementById('search')
+    if (searchSection) {
+      searchSection.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background gradient */}
@@ -56,7 +63,10 @@ export default function Hero() {
           <p className="text-xl mb-8 text-saharan-100">
             Book your comfortable journey today
           </p>
-          <button className="bg-white text-saharan-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-saharan-50 transition-colors shadow-lg">
+          <button
+            onClick={handleBookTripClick}
+            className="bg-white text-saharan-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-saharan-50 transition-colors shadow-lg"
+          >
             Book Your Trip Now
           </button>
         </div>

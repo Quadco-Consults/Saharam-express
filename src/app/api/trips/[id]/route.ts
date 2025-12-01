@@ -9,7 +9,8 @@ interface RouteParams {
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
-    const tripId = params.id
+    const { id } = await params
+    const tripId = id
 
     if (!tripId) {
       return NextResponse.json(

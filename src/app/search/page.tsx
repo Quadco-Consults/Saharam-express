@@ -6,6 +6,7 @@ import Header from '@/components/Header'
 import TripCard from '@/components/TripCard'
 import { useAuth } from '@/hooks/useAuth'
 import AuthModal from '@/components/AuthModal'
+import BookingOptionsModal from '@/components/BookingOptionsModal'
 import { Trip } from '@/types'
 import { formatDate } from '@/utils/formatters'
 
@@ -29,6 +30,7 @@ function SearchContent() {
   const [loading, setLoading] = useState(false)
   const [selectedTrip, setSelectedTrip] = useState<any>(null)
   const [showAuthModal, setShowAuthModal] = useState(false)
+  const [showBookingOptions, setShowBookingOptions] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const searchParams = useSearchParams()
@@ -75,14 +77,39 @@ function SearchContent() {
   }
 
   const handleTripSelect = (trip: any) => {
+    setSelectedTrip(trip)
+
     if (!isAuthenticated) {
-      setSelectedTrip(trip)
-      setShowAuthModal(true)
+      setShowBookingOptions(true)
       return
     }
 
-    // Navigate to booking page
+    // Navigate to booking page for authenticated users
     router.push(`/book?trip=${trip.id}`)
+  }
+
+  const handleGuestBooking = () => {
+    if (selectedTrip) {
+      // Navigate to booking page with guest flag
+      router.push(`/book?trip=${selectedTrip.id}&guest=true`)
+      setShowBookingOptions(false)
+      setSelectedTrip(null)
+    }
+  }
+
+  const handleSignInAndBook = () => {
+    // Close booking options and show auth modal
+    setShowBookingOptions(false)
+    setShowAuthModal(true)
+  }
+
+  const handleAuthSuccess = () => {
+    // After successful authentication, proceed to booking
+    if (selectedTrip) {
+      router.push(`/book?trip=${selectedTrip.id}`)
+      setShowAuthModal(false)
+      setSelectedTrip(null)
+    }
   }
 
   const handleBackToSearch = () => {
@@ -227,6 +254,18 @@ function SearchContent() {
         ) : null}
       </div>
 
+      {/* Booking Options Modal */}
+      <BookingOptionsModal
+        isOpen={showBookingOptions}
+        onClose={() => {
+          setShowBookingOptions(false)
+          setSelectedTrip(null)
+        }}
+        onGuestBooking={handleGuestBooking}
+        onSignInBooking={handleSignInAndBook}
+        tripDetails={selectedTrip}
+      />
+
       {/* Auth Modal */}
       <AuthModal
         isOpen={showAuthModal}
@@ -235,6 +274,7 @@ function SearchContent() {
           setSelectedTrip(null)
         }}
         mode="signin"
+        onSuccess={handleAuthSuccess}
       />
     </div>
   )
