@@ -171,7 +171,7 @@ export default function CreateTripPage() {
               <div className="relative">
                 <select
                   {...register('routeId')}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharam-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
                 >
                   <option value="">Select a route</option>
                   {routes.map((route) => (
@@ -195,7 +195,7 @@ export default function CreateTripPage() {
               <div className="relative">
                 <select
                   {...register('vehicleId')}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharam-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
                 >
                   <option value="">Select a vehicle</option>
                   {vehicles.map((vehicle) => (
@@ -219,7 +219,7 @@ export default function CreateTripPage() {
               <div className="relative">
                 <select
                   {...register('driverId')}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharam-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
                 >
                   <option value="">Select a driver</option>
                   {drivers.map((driver) => (
@@ -245,7 +245,7 @@ export default function CreateTripPage() {
                   type="datetime-local"
                   {...register('departureTime')}
                   min={new Date().toISOString().slice(0, 16)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharam-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
                 />
                 <Calendar className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
               </div>
@@ -263,7 +263,7 @@ export default function CreateTripPage() {
                 <input
                   type="datetime-local"
                   {...register('arrivalTime')}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharam-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
                   readOnly
                 />
                 <Clock className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
@@ -289,7 +289,7 @@ export default function CreateTripPage() {
                   step="100"
                   {...register('basePrice', { valueAsNumber: true })}
                   placeholder="5000"
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharam-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
                 />
                 <DollarSign className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
               </div>
@@ -313,7 +313,7 @@ export default function CreateTripPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 px-6 py-3 bg-saharam-500 text-white rounded-lg hover:bg-saharam-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-6 py-3 bg-saharan-500 text-white rounded-lg hover:bg-saharan-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'Creating Trip...' : 'Schedule Trip'}
               </button>

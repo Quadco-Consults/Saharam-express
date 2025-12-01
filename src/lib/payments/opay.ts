@@ -1,4 +1,4 @@
-// OPay Payment Integration for Saharam Express
+// OPay Payment Integration for Saharan Express
 
 interface OPayConfig {
   publicKey: string
@@ -63,7 +63,7 @@ class OPayService {
       const timestamp = Date.now().toString()
       const requestData = {
         reference: data.reference,
-        mchShortName: 'Saharam Express',
+        mchShortName: 'Saharan Express',
         productName: data.productInfo.productName,
         productDesc: data.productInfo.productDesc,
         userInfo: data.userInfo,

@@ -174,7 +174,7 @@ export default function LoyaltyPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-saharam-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-saharan-500"></div>
       </div>
     )
   }
@@ -197,8 +197,8 @@ export default function LoyaltyPage() {
       <div className="bg-white border-b">
         <div className="max-w-6xl mx-auto px-4 py-6">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-saharam-100 rounded-full flex items-center justify-center">
-              <Award className="w-6 h-6 text-saharam-600" />
+            <div className="w-12 h-12 bg-saharan-100 rounded-full flex items-center justify-center">
+              <Award className="w-6 h-6 text-saharan-600" />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Loyalty Rewards</h1>
@@ -241,7 +241,7 @@ export default function LoyaltyPage() {
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div
-                        className="bg-saharam-500 h-2 rounded-full transition-all duration-300"
+                        className="bg-saharan-500 h-2 rounded-full transition-all duration-300"
                         style={{
                           width: `${
                             loyaltyData.points_to_next_tier
@@ -265,15 +265,15 @@ export default function LoyaltyPage() {
                 <div className="grid grid-cols-3 gap-4">
                   <div className="text-center">
                     <p className="text-sm text-gray-600">Discount</p>
-                    <p className="text-lg font-bold text-saharam-600">{loyaltyData.tier_benefits.discount}%</p>
+                    <p className="text-lg font-bold text-saharan-600">{loyaltyData.tier_benefits.discount}%</p>
                   </div>
                   <div className="text-center">
                     <p className="text-sm text-gray-600">Points Multiplier</p>
-                    <p className="text-lg font-bold text-saharam-600">{loyaltyData.tier_benefits.pointsMultiplier}x</p>
+                    <p className="text-lg font-bold text-saharan-600">{loyaltyData.tier_benefits.pointsMultiplier}x</p>
                   </div>
                   <div className="text-center">
                     <p className="text-sm text-gray-600">Priority Support</p>
-                    <p className="text-lg font-bold text-saharam-600">
+                    <p className="text-lg font-bold text-saharan-600">
                       {loyaltyData.tier_benefits.prioritySupport ? 'Yes' : 'No'}
                     </p>
                   </div>
@@ -393,13 +393,13 @@ export default function LoyaltyPage() {
               <CardContent className="space-y-3">
                 {Object.entries(loyaltyData.tier_thresholds).map(([tier, threshold]) => (
                   <div key={tier} className={`p-3 rounded-lg border ${
-                    tier === loyaltyData.loyalty_tier ? 'border-saharam-500 bg-saharam-50' : 'border-gray-200'
+                    tier === loyaltyData.loyalty_tier ? 'border-saharan-500 bg-saharan-50' : 'border-gray-200'
                   }`}>
                     <div className="flex items-center gap-2 mb-1">
                       {getTierIcon(tier)}
                       <span className="font-medium capitalize">{tier}</span>
                       {tier === loyaltyData.loyalty_tier && (
-                        <span className="text-xs bg-saharam-500 text-white px-2 py-1 rounded-full">Current</span>
+                        <span className="text-xs bg-saharan-500 text-white px-2 py-1 rounded-full">Current</span>
                       )}
                     </div>
                     <p className="text-sm text-gray-600">{threshold.toLocaleString()} points required</p>

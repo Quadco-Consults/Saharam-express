@@ -22,7 +22,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-2 border-saharam-500 border-t-transparent rounded-full"></div>
+        <div className="animate-spin w-8 h-8 border-2 border-saharan-500 border-t-transparent rounded-full"></div>
       </div>
     )
   }

@@ -1,6 +1,6 @@
-# Saharam Express Limited - Deployment Guide
+# Saharan Express Limited - Deployment Guide
 
-This guide will help you deploy the Saharam Express Limited ticketing system to production.
+This guide will help you deploy the Saharan Express Limited ticketing system to production.
 
 ## 🚀 Quick Deploy Options
 
@@ -312,7 +312,7 @@ If you encounter issues:
 
 ## 🎉 You're All Set!
 
-Your Saharam Express Limited ticketing system is now ready for production use. The system includes:
+Your Saharan Express Limited ticketing system is now ready for production use. The system includes:
 
 - ✅ Complete booking management
 - ✅ Admin vehicle, driver, and route management

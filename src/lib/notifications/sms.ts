@@ -3,7 +3,7 @@ import axios from 'axios'
 // SMS Configuration - using Termii as a popular Nigerian SMS provider
 const SMS_API_URL = 'https://api.ng.termii.com/api/sms/send'
 const SMS_API_KEY = process.env.SMS_API_KEY || ''
-const SMS_SENDER_ID = process.env.SMS_SENDER_ID || 'SaharamExp'
+const SMS_SENDER_ID = process.env.SMS_SENDER_ID || 'SaharanExp'
 
 export interface SMSData {
   to: string
@@ -85,7 +85,7 @@ export const SMS_TEMPLATES = {
     route: string
     departureTime: string
     seatNumbers: string[]
-  }) => `Hi ${data.passengerName}! Your Saharam Express booking is confirmed.
+  }) => `Hi ${data.passengerName}! Your Saharan Express booking is confirmed.
 Ref: ${data.bookingRef}
 Route: ${data.route}
 Departure: ${data.departureTime}
@@ -103,7 +103,7 @@ Present your digital ticket for boarding. Safe travels!`,
     route: string
     departureTime: string
     terminal: string
-  }) => `Reminder: Your Saharam Express trip ${data.route} departs in 2 hours at ${data.departureTime}. Please arrive at ${data.terminal} 30 minutes early.`,
+  }) => `Reminder: Your Saharan Express trip ${data.route} departs in 2 hours at ${data.departureTime}. Please arrive at ${data.terminal} 30 minutes early.`,
 
   TRIP_UPDATE: (data: {
     bookingRef: string
@@ -114,7 +114,7 @@ Present your digital ticket for boarding. Safe travels!`,
     passengerName: string
     bookingRef: string
     refundAmount?: number
-  }) => `Your booking ${data.bookingRef} has been cancelled${data.refundAmount ? `. Refund of ₦${data.refundAmount.toLocaleString()} will be processed in 3-5 business days` : ''}. Thank you for choosing Saharam Express.`
+  }) => `Your booking ${data.bookingRef} has been cancelled${data.refundAmount ? `. Refund of ₦${data.refundAmount.toLocaleString()} will be processed in 3-5 business days` : ''}. Thank you for choosing Saharan Express.`
 }
 
 // Send booking confirmation SMS

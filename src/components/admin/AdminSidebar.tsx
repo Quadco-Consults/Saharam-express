@@ -65,11 +65,11 @@ export default function AdminSidebar() {
         {/* Header */}
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-saharam-500 rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-saharan-500 rounded-full flex items-center justify-center">
               <Car className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-gray-900">Saharam Express</h1>
+              <h1 className="text-lg font-bold text-gray-900">Saharan Express</h1>
               <p className="text-sm text-gray-600">Admin Dashboard</p>
             </div>
           </div>
@@ -89,7 +89,7 @@ export default function AdminSidebar() {
                 className={cn(
                   "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
                   isActive
-                    ? "bg-saharam-50 text-saharam-700 border border-saharam-200"
+                    ? "bg-saharan-50 text-saharan-700 border border-saharan-200"
                     : "text-gray-700 hover:bg-gray-100"
                 )}
               >
@@ -103,7 +103,7 @@ export default function AdminSidebar() {
         {/* User section */}
         <div className="p-4 border-t border-gray-200">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 bg-saharam-500 rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-saharan-500 rounded-full flex items-center justify-center">
               <span className="text-white text-sm font-medium">
                 {user?.firstName?.[0] || user?.email?.[0]?.toUpperCase()}
               </span>

@@ -59,7 +59,7 @@ export default function SearchForm() {
                     <select
                       value={formData.from}
                       onChange={(e) => setFormData(prev => ({ ...prev, from: e.target.value }))}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharam-500 focus:border-transparent"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
                     >
                       <option value="Kano">Kano</option>
                       <option value="Kaduna">Kaduna</option>
@@ -73,7 +73,7 @@ export default function SearchForm() {
                     <select
                       value={formData.to}
                       onChange={(e) => setFormData(prev => ({ ...prev, to: e.target.value }))}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharam-500 focus:border-transparent"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
                     >
                       <option value="Kaduna">Kaduna</option>
                       <option value="Kano">Kano</option>
@@ -85,7 +85,7 @@ export default function SearchForm() {
                 <button
                   type="button"
                   onClick={handleSwapLocations}
-                  className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-saharam-500 text-white p-2 rounded-full hover:bg-saharam-600 transition-colors shadow-md"
+                  className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-saharan-500 text-white p-2 rounded-full hover:bg-saharan-600 transition-colors shadow-md"
                 >
                   <ArrowRightLeft className="w-4 h-4" />
                 </button>
@@ -102,7 +102,7 @@ export default function SearchForm() {
                     value={formData.departureDate}
                     onChange={(e) => setFormData(prev => ({ ...prev, departureDate: e.target.value }))}
                     min={new Date().toISOString().split('T')[0]}
-                    className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharam-500 focus:border-transparent"
+                    className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
                     required
                   />
                   <Calendar className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
@@ -118,7 +118,7 @@ export default function SearchForm() {
                   <select
                     value={formData.passengers}
                     onChange={(e) => setFormData(prev => ({ ...prev, passengers: parseInt(e.target.value) }))}
-                    className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharam-500 focus:border-transparent appearance-none"
+                    className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent appearance-none"
                   >
                     {[1,2,3,4,5,6,7,8].map(num => (
                       <option key={num} value={num}>{num} {num === 1 ? 'Passenger' : 'Passengers'}</option>
@@ -133,7 +133,7 @@ export default function SearchForm() {
             <div className="mt-8 text-center">
               <button
                 type="submit"
-                className="bg-saharam-500 text-white px-12 py-4 rounded-lg font-semibold text-lg hover:bg-saharam-600 transition-colors shadow-lg inline-flex items-center gap-2"
+                className="bg-saharan-500 text-white px-12 py-4 rounded-lg font-semibold text-lg hover:bg-saharan-600 transition-colors shadow-lg inline-flex items-center gap-2"
               >
                 <Search className="w-5 h-5" />
                 Search Trips

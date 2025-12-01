@@ -76,7 +76,7 @@ export default function SeatMap({
       case 'booked':
         return cn(baseClasses, "bg-red-100 border-red-300 text-red-600 cursor-not-allowed hover:scale-100")
       case 'selected':
-        return cn(baseClasses, "bg-saharam-500 border-saharam-600 text-white shadow-md")
+        return cn(baseClasses, "bg-saharan-500 border-saharan-600 text-white shadow-md")
       case 'available':
         return cn(baseClasses, "bg-green-100 border-green-300 text-green-700 hover:bg-green-200")
       default:
@@ -112,7 +112,7 @@ export default function SeatMap({
             <span>Available</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-saharam-500 border border-saharam-600 rounded"></div>
+            <div className="w-4 h-4 bg-saharan-500 border border-saharan-600 rounded"></div>
             <span>Selected</span>
           </div>
           <div className="flex items-center gap-2">
@@ -194,15 +194,15 @@ export default function SeatMap({
 
         {/* Selection Summary */}
         {selectedSeats.length > 0 && (
-          <div className="mt-6 p-4 bg-saharam-50 rounded-lg">
+          <div className="mt-6 p-4 bg-saharan-50 rounded-lg">
             <div className="text-center">
-              <p className="text-sm font-medium text-saharam-900 mb-1">
+              <p className="text-sm font-medium text-saharan-900 mb-1">
                 Selected Seats
               </p>
-              <p className="text-lg font-bold text-saharam-600">
+              <p className="text-lg font-bold text-saharan-600">
                 {selectedSeats.sort((a, b) => parseInt(a) - parseInt(b)).join(', ')}
               </p>
-              <p className="text-xs text-saharam-600 mt-1">
+              <p className="text-xs text-saharan-600 mt-1">
                 {selectedSeats.length} of {maxSeats} seats selected
               </p>
             </div>

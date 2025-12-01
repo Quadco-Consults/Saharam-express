@@ -1,4 +1,4 @@
-// Paystack Payment Integration for Saharam Express
+// Paystack Payment Integration for Saharan Express
 
 interface PaystackConfig {
   publicKey: string

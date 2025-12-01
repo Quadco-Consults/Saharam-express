@@ -133,21 +133,21 @@ function SearchContent() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-saharam-500" />
+                <MapPin className="w-5 h-5 text-saharan-500" />
                 <span className="font-medium">{from} → {to}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-saharam-500" />
+                <Calendar className="w-5 h-5 text-saharan-500" />
                 <span className="font-medium">{date ? formatDate(date) : ''}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-saharam-500" />
+                <Users className="w-5 h-5 text-saharan-500" />
                 <span className="font-medium">{passengers} passenger{passengers > 1 ? 's' : ''}</span>
               </div>
             </div>
             <button
               onClick={handleNewSearch}
-              className="flex items-center gap-2 px-4 py-2 border border-saharam-300 text-saharam-600 rounded-lg hover:bg-saharam-50 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 border border-saharan-300 text-saharan-600 rounded-lg hover:bg-saharan-50 transition-colors"
             >
               <Search className="w-4 h-4" />
               New Search
@@ -189,7 +189,7 @@ function SearchContent() {
             <p className="text-gray-600 mb-6">{error}</p>
             <button
               onClick={searchTrips}
-              className="px-6 py-3 bg-saharam-500 text-white rounded-lg hover:bg-saharam-600 transition-colors"
+              className="px-6 py-3 bg-saharan-500 text-white rounded-lg hover:bg-saharan-600 transition-colors"
             >
               Try Again
             </button>
@@ -202,7 +202,7 @@ function SearchContent() {
               </p>
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <span>Sort by:</span>
-                <select className="border border-gray-300 rounded px-3 py-1 text-sm focus:ring-2 focus:ring-saharam-500 focus:border-transparent">
+                <select className="border border-gray-300 rounded px-3 py-1 text-sm focus:ring-2 focus:ring-saharan-500 focus:border-transparent">
                   <option value="departure">Departure Time</option>
                   <option value="price">Price</option>
                   <option value="duration">Duration</option>
@@ -233,7 +233,7 @@ function SearchContent() {
             </p>
             <button
               onClick={handleNewSearch}
-              className="px-6 py-3 bg-saharam-500 text-white rounded-lg hover:bg-saharam-600 transition-colors"
+              className="px-6 py-3 bg-saharan-500 text-white rounded-lg hover:bg-saharan-600 transition-colors"
             >
               Modify Search
             </button>
@@ -258,7 +258,7 @@ export default function SearchPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-saharam-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-saharan-500"></div>
       </div>
     }>
       <SearchContent />

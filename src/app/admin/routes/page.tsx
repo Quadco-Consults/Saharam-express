@@ -61,7 +61,12 @@ export default function AdminRoutesPage() {
 
   const loadRoutes = async () => {
     try {
-      const response = await fetch('/api/admin/routes')
+      const token = localStorage.getItem('auth_token')
+      const response = await fetch('/api/admin/routes', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
       const result = await response.json()
 
       if (result.success) {
@@ -154,10 +159,12 @@ export default function AdminRoutesPage() {
         payload.is_active = editingRoute.is_active
       }
 
+      const token = localStorage.getItem('auth_token')
       const response = await fetch('/api/admin/routes', {
         method: editingRoute ? 'PUT' : 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(payload),
       })
@@ -209,10 +216,12 @@ export default function AdminRoutesPage() {
 
   const toggleRouteStatus = async (route: RouteData) => {
     try {
+      const token = localStorage.getItem('auth_token')
       const response = await fetch('/api/admin/routes', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           ...route,
@@ -250,7 +259,7 @@ export default function AdminRoutesPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-saharam-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-saharan-500"></div>
       </div>
     )
   }
@@ -262,7 +271,7 @@ export default function AdminRoutesPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
-              <Route className="w-8 h-8 text-saharam-600" />
+              <Route className="w-8 h-8 text-saharan-600" />
               Route & Pricing Management
             </h1>
             <p className="text-gray-600 mt-1">Manage travel routes and pricing structure</p>

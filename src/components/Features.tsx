@@ -40,7 +40,7 @@ export default function Features() {
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-800 mb-4">
-            Why Choose Saharam Express?
+            Why Choose Saharan Express?
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             We combine traditional Nigerian hospitality with modern technology to provide
@@ -56,8 +56,8 @@ export default function Features() {
                 key={index}
                 className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-gray-100"
               >
-                <div className="bg-saharam-100 w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                  <IconComponent className="w-8 h-8 text-saharam-600" />
+                <div className="bg-saharan-100 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+                  <IconComponent className="w-8 h-8 text-saharan-600" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-800 mb-4">
                   {feature.title}
@@ -74,19 +74,19 @@ export default function Features() {
         <div className="mt-20">
           <div className="grid md:grid-cols-4 gap-8 text-center">
             <div className="bg-white rounded-lg p-6 shadow-md">
-              <div className="text-3xl font-bold text-saharam-600 mb-2">5000+</div>
+              <div className="text-3xl font-bold text-saharan-600 mb-2">5000+</div>
               <div className="text-gray-600">Happy Passengers</div>
             </div>
             <div className="bg-white rounded-lg p-6 shadow-md">
-              <div className="text-3xl font-bold text-saharam-600 mb-2">99.5%</div>
+              <div className="text-3xl font-bold text-saharan-600 mb-2">99.5%</div>
               <div className="text-gray-600">On-time Performance</div>
             </div>
             <div className="bg-white rounded-lg p-6 shadow-md">
-              <div className="text-3xl font-bold text-saharam-600 mb-2">3 Years</div>
+              <div className="text-3xl font-bold text-saharan-600 mb-2">3 Years</div>
               <div className="text-gray-600">Of Excellence</div>
             </div>
             <div className="bg-white rounded-lg p-6 shadow-md">
-              <div className="text-3xl font-bold text-saharam-600 mb-2">24/7</div>
+              <div className="text-3xl font-bold text-saharan-600 mb-2">24/7</div>
               <div className="text-gray-600">Customer Support</div>
             </div>
           </div>

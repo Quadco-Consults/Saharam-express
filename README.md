@@ -1,12 +1,12 @@
-# Saharam Express Ticketing System
+# Saharan Express Ticketing System
 
 > ...driving excellence one mile at a time
 
-A modern, full-stack ticketing system for Saharam Express Limited, Nigeria's premium inter-city transport service connecting Kano and Kaduna.
+A modern, full-stack ticketing system for Saharan Express Limited, Nigeria's premium inter-city transport service connecting Kano and Kaduna.
 
-## 🚌 About Saharam Express
+## 🚌 About Saharan Express
 
-Saharam Express Limited is a premium car logistics company operating between Kano and Kaduna states in Nigeria. We provide safe, reliable, and comfortable transportation services with a focus on punctuality and customer satisfaction.
+Saharan Express Limited is a premium car logistics company operating between Kano and Kaduna states in Nigeria. We provide safe, reliable, and comfortable transportation services with a focus on punctuality and customer satisfaction.
 
 ## 🌟 Features
 
@@ -179,8 +179,8 @@ We welcome contributions! Please see our contributing guidelines for details.
 
 ## 📄 License
 
-This project is proprietary software owned by Saharam Express Limited.
+This project is proprietary software owned by Saharan Express Limited.
 
 ---
 
-**Saharam Express Limited** - Driving excellence one mile at a time 🚌
+**Saharan Express Limited** - Driving excellence one mile at a time 🚌

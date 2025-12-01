@@ -6,7 +6,7 @@ export default function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-saharam-500 via-saharam-400 to-saharam-600 opacity-90" />
+      <div className="absolute inset-0 bg-gradient-to-br from-saharan-500 via-saharan-400 to-saharan-600 opacity-90" />
 
       {/* Pattern overlay */}
       <div className="absolute inset-0" style={{
@@ -18,14 +18,14 @@ export default function Hero() {
         <div className="mb-8">
           <div className="w-32 h-32 mx-auto mb-6 bg-white rounded-full p-4 shadow-2xl">
             <div className="w-full h-full flex items-center justify-center">
-              <Car className="w-16 h-16 text-saharam-500" />
+              <Car className="w-16 h-16 text-saharan-500" />
             </div>
           </div>
           <h1 className="text-5xl md:text-7xl font-bold mb-4">
-            Saharam Express
+            Saharan Express
           </h1>
           <p className="text-xl md:text-2xl font-light mb-2">EXPRESS LIMITED</p>
-          <div className="w-24 h-px bg-saharam-200 mx-auto mb-4" />
+          <div className="w-24 h-px bg-saharan-200 mx-auto mb-4" />
           <p className="text-lg italic">...driving excellence one mile at a time</p>
         </div>
 
@@ -34,17 +34,17 @@ export default function Hero() {
           <div className="flex flex-col items-center">
             <Shield className="w-12 h-12 mb-4" />
             <h3 className="text-xl font-semibold mb-2">Safe & Secure</h3>
-            <p className="text-saharam-100">Professional drivers and well-maintained vehicles</p>
+            <p className="text-saharan-100">Professional drivers and well-maintained vehicles</p>
           </div>
           <div className="flex flex-col items-center">
             <Clock className="w-12 h-12 mb-4" />
             <h3 className="text-xl font-semibold mb-2">Always On Time</h3>
-            <p className="text-saharam-100">Reliable schedules you can count on</p>
+            <p className="text-saharan-100">Reliable schedules you can count on</p>
           </div>
           <div className="flex flex-col items-center">
             <Star className="w-12 h-12 mb-4" />
             <h3 className="text-xl font-semibold mb-2">Premium Service</h3>
-            <p className="text-saharam-100">Comfortable rides at competitive prices</p>
+            <p className="text-saharan-100">Comfortable rides at competitive prices</p>
           </div>
         </div>
 
@@ -53,10 +53,10 @@ export default function Hero() {
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             Kano ↔ Kaduna Daily Service
           </h2>
-          <p className="text-xl mb-8 text-saharam-100">
+          <p className="text-xl mb-8 text-saharan-100">
             Book your comfortable journey today
           </p>
-          <button className="bg-white text-saharam-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-saharam-50 transition-colors shadow-lg">
+          <button className="bg-white text-saharan-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-saharan-50 transition-colors shadow-lg">
             Book Your Trip Now
           </button>
         </div>

@@ -42,7 +42,7 @@ export async function sendEmail(data: EmailData): Promise<EmailResponse> {
     }
 
     const mailOptions = {
-      from: `"Saharam Express" <${process.env.EMAIL_FROM || 'noreply@saharamexpress.com.ng'}>`,
+      from: `"Saharan Express" <${process.env.EMAIL_FROM || 'noreply@saharamexpress.com.ng'}>`,
       to: data.to,
       subject: data.subject,
       html: data.html,
@@ -78,7 +78,7 @@ export const EMAIL_TEMPLATES = {
     totalAmount: number
     qrCodeUrl?: string
   }) => ({
-    subject: `Booking Confirmed - ${data.bookingRef} | Saharam Express`,
+    subject: `Booking Confirmed - ${data.bookingRef} | Saharan Express`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -115,7 +115,7 @@ export const EMAIL_TEMPLATES = {
             </div>
 
             <p>Dear ${data.passengerName},</p>
-            <p>Thank you for choosing Saharam Express! Your booking has been confirmed and payment received.</p>
+            <p>Thank you for choosing Saharan Express! Your booking has been confirmed and payment received.</p>
 
             <div class="booking-details">
               <h3 style="margin-top: 0; color: #16a34a;">Booking Details</h3>
@@ -167,7 +167,7 @@ export const EMAIL_TEMPLATES = {
             <p>We wish you a safe and comfortable journey!</p>
 
             <div class="footer">
-              <p><strong>Saharam Express Limited</strong><br>
+              <p><strong>Saharan Express Limited</strong><br>
               Email: info@saharamexpress.com.ng<br>
               Phone: +234-XXX-XXX-XXXX</p>
               <p style="font-size: 12px; color: #999;">
@@ -197,7 +197,7 @@ export const EMAIL_TEMPLATES = {
 
       Safe travels!
 
-      Saharam Express Limited
+      Saharan Express Limited
     `
   }),
 
@@ -208,7 +208,7 @@ export const EMAIL_TEMPLATES = {
     paymentMethod: string
     transactionRef: string
   }) => ({
-    subject: `Payment Receipt - ${data.bookingRef} | Saharam Express`,
+    subject: `Payment Receipt - ${data.bookingRef} | Saharan Express`,
     html: `
       <!DOCTYPE html>
       <html>

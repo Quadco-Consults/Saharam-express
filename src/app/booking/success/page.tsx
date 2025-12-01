@@ -65,7 +65,7 @@ function BookingSuccessContent() {
         <Header />
         <div className="container mx-auto px-6 py-12">
           <div className="max-w-2xl mx-auto text-center">
-            <div className="animate-spin w-8 h-8 border-2 border-saharam-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <div className="animate-spin w-8 h-8 border-2 border-saharan-500 border-t-transparent rounded-full mx-auto mb-4"></div>
             <p className="text-gray-600">Verifying your payment...</p>
           </div>
         </div>
@@ -91,7 +91,7 @@ function BookingSuccessContent() {
               </p>
               <a
                 href="/support"
-                className="inline-flex items-center px-6 py-3 bg-saharam-500 text-white rounded-lg hover:bg-saharam-600 transition-colors"
+                className="inline-flex items-center px-6 py-3 bg-saharan-500 text-white rounded-lg hover:bg-saharan-600 transition-colors"
               >
                 Contact Support
               </a>
@@ -124,19 +124,19 @@ function BookingSuccessContent() {
           {/* Booking Details Card */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8">
             {/* Header */}
-            <div className="bg-saharam-500 text-white p-6">
+            <div className="bg-saharan-500 text-white p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-semibold mb-1">
                     {booking.trip.route.from_city} → {booking.trip.route.to_city}
                   </h2>
-                  <p className="text-saharam-100">
+                  <p className="text-saharan-100">
                     Booking Reference: <span className="font-mono font-medium">{booking.booking_reference}</span>
                   </p>
                 </div>
                 <div className="text-right">
                   <p className="text-2xl font-bold">{formatCurrency(booking.total_amount)}</p>
-                  <p className="text-saharam-100 text-sm">Total Paid</p>
+                  <p className="text-saharan-100 text-sm">Total Paid</p>
                 </div>
               </div>
             </div>
@@ -200,7 +200,7 @@ function BookingSuccessContent() {
 
           {/* Action Buttons */}
           <div className="grid md:grid-cols-3 gap-4 mb-8">
-            <button className="flex items-center justify-center gap-2 px-6 py-3 bg-saharam-500 text-white rounded-lg hover:bg-saharam-600 transition-colors">
+            <button className="flex items-center justify-center gap-2 px-6 py-3 bg-saharan-500 text-white rounded-lg hover:bg-saharan-600 transition-colors">
               <Download className="w-4 h-4" />
               Download Ticket
             </button>
@@ -219,7 +219,7 @@ function BookingSuccessContent() {
             <h3 className="text-lg font-semibold text-gray-900 mb-4">What's Next?</h3>
             <div className="space-y-4">
               <div className="flex items-start gap-3">
-                <div className="w-6 h-6 bg-saharam-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
+                <div className="w-6 h-6 bg-saharan-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
                   1
                 </div>
                 <div>
@@ -231,7 +231,7 @@ function BookingSuccessContent() {
               </div>
 
               <div className="flex items-start gap-3">
-                <div className="w-6 h-6 bg-saharam-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
+                <div className="w-6 h-6 bg-saharan-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
                   2
                 </div>
                 <div>
@@ -243,7 +243,7 @@ function BookingSuccessContent() {
               </div>
 
               <div className="flex items-start gap-3">
-                <div className="w-6 h-6 bg-saharam-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
+                <div className="w-6 h-6 bg-saharan-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
                   3
                 </div>
                 <div>
@@ -266,7 +266,7 @@ function BookingSuccessContent() {
             </a>
             <a
               href="/search"
-              className="flex items-center justify-center gap-2 px-6 py-3 border border-saharam-300 text-saharam-600 rounded-lg hover:bg-saharam-50 transition-colors"
+              className="flex items-center justify-center gap-2 px-6 py-3 border border-saharan-300 text-saharan-600 rounded-lg hover:bg-saharan-50 transition-colors"
             >
               Book Another Trip
               <ArrowRight className="w-4 h-4" />
@@ -282,7 +282,7 @@ export default function BookingSuccessPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-saharam-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-saharan-500"></div>
       </div>
     }>
       <BookingSuccessContent />

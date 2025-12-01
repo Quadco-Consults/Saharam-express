@@ -59,7 +59,12 @@ export default function AdminVehiclesPage() {
 
   const loadVehicles = async () => {
     try {
-      const response = await fetch('/api/admin/vehicles')
+      const token = localStorage.getItem('auth_token')
+      const response = await fetch('/api/admin/vehicles', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
       const result = await response.json()
 
       if (result.success) {
@@ -144,10 +149,12 @@ export default function AdminVehiclesPage() {
         payload.id = editingVehicle.id
       }
 
+      const token = localStorage.getItem('auth_token')
       const response = await fetch('/api/admin/vehicles', {
         method: editingVehicle ? 'PUT' : 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(payload),
       })
@@ -178,8 +185,12 @@ export default function AdminVehiclesPage() {
     }
 
     try {
+      const token = localStorage.getItem('auth_token')
       const response = await fetch(`/api/admin/vehicles?id=${vehicleId}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       })
 
       const result = await response.json()
@@ -199,10 +210,12 @@ export default function AdminVehiclesPage() {
 
   const toggleVehicleStatus = async (vehicle: Vehicle) => {
     try {
+      const token = localStorage.getItem('auth_token')
       const response = await fetch('/api/admin/vehicles', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           ...vehicle,
@@ -239,7 +252,7 @@ export default function AdminVehiclesPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-saharam-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-saharan-500"></div>
       </div>
     )
   }
@@ -251,7 +264,7 @@ export default function AdminVehiclesPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
-              <Car className="w-8 h-8 text-saharam-600" />
+              <Car className="w-8 h-8 text-saharan-600" />
               Vehicle Management
             </h1>
             <p className="text-gray-600 mt-1">Manage your fleet vehicles and maintenance schedules</p>

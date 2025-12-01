@@ -240,7 +240,7 @@ function BookContent() {
               </p>
               <button
                 onClick={() => router.push('/search')}
-                className="px-6 py-3 bg-saharam-500 text-white rounded-lg hover:bg-saharam-600 transition-colors"
+                className="px-6 py-3 bg-saharan-500 text-white rounded-lg hover:bg-saharan-600 transition-colors"
               >
                 Back to Search
               </button>
@@ -284,7 +284,7 @@ function BookContent() {
                 <div key={key} className="flex items-center">
                   <div className={cn(
                     "w-10 h-10 rounded-full flex items-center justify-center",
-                    step === key ? "bg-saharam-500 text-white" :
+                    step === key ? "bg-saharan-500 text-white" :
                     (step === 'details' && key === 'seats') || (step === 'payment' && key !== 'payment')
                       ? "bg-green-500 text-white" : "bg-gray-200 text-gray-400"
                   )}>
@@ -327,7 +327,7 @@ function BookContent() {
                         <input
                           type="text"
                           {...register('passengerName')}
-                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharam-500 focus:border-transparent"
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
                           placeholder="Enter passenger full name"
                         />
                         <User className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
@@ -345,7 +345,7 @@ function BookContent() {
                         <input
                           type="tel"
                           {...register('passengerPhone')}
-                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharam-500 focus:border-transparent"
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
                           placeholder="08012345678"
                         />
                         <Phone className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
@@ -363,7 +363,7 @@ function BookContent() {
                         <input
                           type="email"
                           {...register('passengerEmail')}
-                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharam-500 focus:border-transparent"
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
                           placeholder="your@email.com"
                         />
                         <Mail className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
@@ -384,7 +384,7 @@ function BookContent() {
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="flex-1 bg-saharam-500 text-white py-3 rounded-lg font-semibold hover:bg-saharam-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 bg-saharan-500 text-white py-3 rounded-lg font-semibold hover:bg-saharan-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {isSubmitting ? 'Processing...' : 'Continue to Payment'}
                       </button>
@@ -456,7 +456,7 @@ function BookContent() {
                   <div className="border-t border-gray-200 pt-2">
                     <div className="flex justify-between text-lg font-bold">
                       <span>Total</span>
-                      <span className="text-saharam-600">
+                      <span className="text-saharan-600">
                         {formatCurrency(totalAmount)}
                       </span>
                     </div>
@@ -468,7 +468,7 @@ function BookContent() {
                   <button
                     onClick={handleContinueToDetails}
                     disabled={selectedSeats.length === 0}
-                    className="w-full mt-6 bg-saharam-500 text-white py-3 rounded-lg font-semibold hover:bg-saharam-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full mt-6 bg-saharan-500 text-white py-3 rounded-lg font-semibold hover:bg-saharan-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Continue ({selectedSeats.length} seat{selectedSeats.length !== 1 ? 's' : ''})
                   </button>
@@ -486,7 +486,7 @@ export default function BookPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-saharam-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-saharan-500"></div>
       </div>
     }>
       <BookContent />

@@ -30,34 +30,34 @@ export default function Header() {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-saharam-500 rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-saharan-500 rounded-full flex items-center justify-center">
                 <Car className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Saharam Express</h1>
-                <p className="text-xs text-saharam-600 hidden sm:block">Express Limited</p>
+                <h1 className="text-xl font-bold text-gray-900">Saharan Express</h1>
+                <p className="text-xs text-saharan-600 hidden sm:block">Express Limited</p>
               </div>
             </div>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
-              <a href="#" className="text-gray-700 hover:text-saharam-600 transition-colors">
+              <a href="#" className="text-gray-700 hover:text-saharan-600 transition-colors">
                 Home
               </a>
-              <a href="#search" className="text-gray-700 hover:text-saharam-600 transition-colors">
+              <a href="#search" className="text-gray-700 hover:text-saharan-600 transition-colors">
                 Book Trip
               </a>
-              <a href="#schedules" className="text-gray-700 hover:text-saharam-600 transition-colors">
+              <a href="#schedules" className="text-gray-700 hover:text-saharan-600 transition-colors">
                 Schedules
               </a>
-              <a href="#about" className="text-gray-700 hover:text-saharam-600 transition-colors">
+              <a href="#about" className="text-gray-700 hover:text-saharan-600 transition-colors">
                 About
               </a>
-              <a href="#contact" className="text-gray-700 hover:text-saharam-600 transition-colors">
+              <a href="#contact" className="text-gray-700 hover:text-saharan-600 transition-colors">
                 Contact
               </a>
               {isAdmin && (
-                <a href="/admin" className="text-saharam-600 hover:text-saharam-700 font-medium transition-colors">
+                <a href="/admin" className="text-saharan-600 hover:text-saharan-700 font-medium transition-colors">
                   Admin Dashboard
                 </a>
               )}
@@ -71,7 +71,7 @@ export default function Header() {
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                     className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50 transition-colors"
                   >
-                    <div className="w-8 h-8 bg-saharam-500 rounded-full flex items-center justify-center">
+                    <div className="w-8 h-8 bg-saharan-500 rounded-full flex items-center justify-center">
                       <span className="text-white text-sm font-medium">
                         {user.firstName?.[0] || user.email?.[0]?.toUpperCase()}
                       </span>
@@ -125,13 +125,13 @@ export default function Header() {
                 <div className="flex items-center space-x-3">
                   <button
                     onClick={() => handleAuthClick('signin')}
-                    className="px-4 py-2 text-saharam-600 hover:text-saharam-700 font-medium transition-colors"
+                    className="px-4 py-2 text-saharan-600 hover:text-saharan-700 font-medium transition-colors"
                   >
                     Sign In
                   </button>
                   <button
                     onClick={() => handleAuthClick('signup')}
-                    className="px-4 py-2 bg-saharam-500 text-white rounded-lg hover:bg-saharam-600 transition-colors font-medium"
+                    className="px-4 py-2 bg-saharan-500 text-white rounded-lg hover:bg-saharan-600 transition-colors font-medium"
                   >
                     Sign Up
                   </button>
@@ -185,7 +185,7 @@ export default function Header() {
                 {isAdmin && (
                   <a
                     href="/admin"
-                    className="block px-4 py-2 text-saharam-600 hover:bg-saharam-50 rounded-lg transition-colors font-medium"
+                    className="block px-4 py-2 text-saharan-600 hover:bg-saharan-50 rounded-lg transition-colors font-medium"
                   >
                     Admin Dashboard
                   </a>
@@ -196,7 +196,7 @@ export default function Header() {
               {isAuthenticated && user ? (
                 <div className="border-t border-gray-200 pt-4 mt-4">
                   <div className="flex items-center gap-3 px-4 py-2 mb-3">
-                    <div className="w-10 h-10 bg-saharam-500 rounded-full flex items-center justify-center">
+                    <div className="w-10 h-10 bg-saharan-500 rounded-full flex items-center justify-center">
                       <span className="text-white font-medium">
                         {user.firstName?.[0] || user.email?.[0]?.toUpperCase()}
                       </span>
@@ -238,13 +238,13 @@ export default function Header() {
                 <div className="border-t border-gray-200 pt-4 mt-4 space-y-2">
                   <button
                     onClick={() => handleAuthClick('signin')}
-                    className="block w-full text-left px-4 py-2 text-saharam-600 hover:bg-saharam-50 rounded-lg font-medium"
+                    className="block w-full text-left px-4 py-2 text-saharan-600 hover:bg-saharan-50 rounded-lg font-medium"
                   >
                     Sign In
                   </button>
                   <button
                     onClick={() => handleAuthClick('signup')}
-                    className="block w-full text-left px-4 py-2 bg-saharam-500 text-white rounded-lg hover:bg-saharam-600 font-medium"
+                    className="block w-full text-left px-4 py-2 bg-saharan-500 text-white rounded-lg hover:bg-saharan-600 font-medium"
                   >
                     Sign Up
                   </button>

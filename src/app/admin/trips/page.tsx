@@ -36,7 +36,7 @@ interface Trip {
   driver: {
     first_name: string
     last_name: string
-  }
+  } | null
 }
 
 export default function AdminTripsPage() {
@@ -53,7 +53,12 @@ export default function AdminTripsPage() {
 
   const fetchTrips = async () => {
     try {
-      const response = await fetch('/api/admin/trips')
+      const token = localStorage.getItem('auth_token')
+      const response = await fetch('/api/admin/trips', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
       const data = await response.json()
 
       if (response.ok && data.success) {
@@ -72,8 +77,12 @@ export default function AdminTripsPage() {
     if (!confirm('Are you sure you want to delete this trip?')) return
 
     try {
-      const response = await fetch(`/api/admin/trips/${tripId}`, {
-        method: 'DELETE'
+      const token = localStorage.getItem('auth_token')
+      const response = await fetch(`/api/admin/trips?id=${tripId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       })
 
       if (response.ok) {
@@ -119,7 +128,7 @@ export default function AdminTripsPage() {
       trip.route.from_city.toLowerCase().includes(searchTerm.toLowerCase()) ||
       trip.route.to_city.toLowerCase().includes(searchTerm.toLowerCase()) ||
       trip.vehicle.plate_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      `${trip.driver.first_name} ${trip.driver.last_name}`.toLowerCase().includes(searchTerm.toLowerCase())
+      (trip.driver && `${trip.driver.first_name} ${trip.driver.last_name}`.toLowerCase().includes(searchTerm.toLowerCase()))
 
     const matchesStatus = statusFilter === 'all' || trip.status === statusFilter
 
@@ -163,7 +172,7 @@ export default function AdminTripsPage() {
           </div>
           <button
             onClick={() => router.push('/admin/trips/create')}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-saharam-500 text-white rounded-lg hover:bg-saharam-600 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-saharan-500 text-white rounded-lg hover:bg-saharan-600 transition-colors"
           >
             <Plus className="w-4 h-4" />
             Schedule Trip
@@ -181,14 +190,14 @@ export default function AdminTripsPage() {
               placeholder="Search trips, vehicles, or drivers..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharam-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
             />
           </div>
 
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharam-500 focus:border-transparent"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
           >
             <option value="all">All Status</option>
             <option value="scheduled">Scheduled</option>
@@ -202,7 +211,7 @@ export default function AdminTripsPage() {
             type="date"
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharam-500 focus:border-transparent"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
           />
         </div>
       </div>
@@ -221,7 +230,7 @@ export default function AdminTripsPage() {
             </p>
             <button
               onClick={() => router.push('/admin/trips/create')}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-saharam-500 text-white rounded-lg hover:bg-saharam-600 transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-saharan-500 text-white rounded-lg hover:bg-saharan-600 transition-colors"
             >
               <Plus className="w-4 h-4" />
               Schedule First Trip
@@ -271,7 +280,12 @@ export default function AdminTripsPage() {
                       <div className="col-span-2">
                         <div className="flex items-center gap-2">
                           <Users className="w-4 h-4 text-gray-400" />
-                          <span>{trip.driver.first_name} {trip.driver.last_name}</span>
+                          <span>
+                            {trip.driver
+                              ? `${trip.driver.first_name} ${trip.driver.last_name}`
+                              : 'No driver assigned'
+                            }
+                          </span>
                         </div>
                       </div>
 
@@ -299,7 +313,7 @@ export default function AdminTripsPage() {
                       </div>
 
                       <div className="col-span-1">
-                        <span className="font-medium text-saharam-600">
+                        <span className="font-medium text-saharan-600">
                           {formatCurrency(trip.base_price)}
                         </span>
                       </div>
@@ -312,7 +326,7 @@ export default function AdminTripsPage() {
                         <div className="flex items-center gap-1">
                           <button
                             onClick={() => router.push(`/admin/trips/${trip.id}`)}
-                            className="p-1 text-gray-400 hover:text-saharam-600 transition-colors"
+                            className="p-1 text-gray-400 hover:text-saharan-600 transition-colors"
                             title="View Details"
                           >
                             <Eye className="w-4 h-4" />
@@ -348,7 +362,7 @@ export default function AdminTripsPage() {
                 <button className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50">
                   Previous
                 </button>
-                <button className="px-3 py-1 text-sm bg-saharam-500 text-white rounded">
+                <button className="px-3 py-1 text-sm bg-saharan-500 text-white rounded">
                   1
                 </button>
                 <button className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50">

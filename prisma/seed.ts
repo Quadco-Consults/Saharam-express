@@ -4,13 +4,13 @@ import { AuthService } from '../src/lib/auth'
 const prisma = new PrismaClient()
 
 async function main() {
-  console.log('🌱 Seeding Saharam Express database...')
+  console.log('🌱 Seeding Saharan Express database...')
 
   // Create admin user (skip if exists)
   let admin
   try {
     admin = await AuthService.createAdminUser(
-      'admin@saharam-express.com',
+      'admin@saharan-express.com',
       'admin123',
       'Admin',
       'User'
@@ -20,7 +20,7 @@ async function main() {
     if (error.code === 'P2002') {
       console.log('✅ Admin user already exists, skipping creation')
       admin = await prisma.user.findUnique({
-        where: { email: 'admin@saharam-express.com' }
+        where: { email: 'admin@saharan-express.com' }
       })
     } else {
       throw error

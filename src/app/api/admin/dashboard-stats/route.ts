@@ -144,15 +144,15 @@ export async function GET(request: NextRequest) {
     // Format recent bookings
     const formattedRecentBookings = recentBookings.map(booking => ({
       id: booking.id,
-      bookingReference: booking.bookingReference,
-      passengerName: booking.passengerName,
-      totalAmount: Number(booking.totalAmount),
-      createdAt: booking.createdAt.toISOString(),
+      booking_reference: booking.bookingReference,
+      passenger_name: booking.passengerName,
+      total_amount: Number(booking.totalAmount),
+      created_at: booking.createdAt.toISOString(),
       trip: {
-        departureTime: booking.trip.departureTime.toISOString(),
+        departure_time: booking.trip.departureTime.toISOString(),
         route: {
-          fromCity: booking.trip.route.fromCity,
-          toCity: booking.trip.route.toCity
+          from_city: booking.trip.route.fromCity,
+          to_city: booking.trip.route.toCity
         }
       }
     }))
@@ -160,15 +160,15 @@ export async function GET(request: NextRequest) {
     // Format upcoming trips
     const formattedUpcomingTrips = upcomingTrips.map(trip => ({
       id: trip.id,
-      departureTime: trip.departureTime.toISOString(),
-      availableSeats: trip.availableSeats,
-      totalSeats: trip.totalSeats,
+      departure_time: trip.departureTime.toISOString(),
+      available_seats: trip.availableSeats,
+      total_seats: trip.totalSeats,
       route: {
-        fromCity: trip.route.fromCity,
-        toCity: trip.route.toCity
+        from_city: trip.route.fromCity,
+        to_city: trip.route.toCity
       },
       vehicle: {
-        plateNumber: trip.vehicle.plateNumber,
+        plate_number: trip.vehicle.plateNumber,
         model: trip.vehicle.model
       }
     }))

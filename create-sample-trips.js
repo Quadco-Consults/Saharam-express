@@ -13,7 +13,7 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey, {
 
 async function createSampleTrips() {
   try {
-    console.log('🚗 Creating sample trips for Saharam Express...')
+    console.log('🚗 Creating sample trips for Saharan Express...')
 
     // Get routes, vehicles, and driver
     const { data: routes } = await supabase.from('routes').select('*')

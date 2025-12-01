@@ -143,8 +143,8 @@ export default function AuthModal({ isOpen, onClose, mode = 'signin' }: AuthModa
               {currentMode === 'forgot' && 'Reset Password'}
             </h2>
             <p className="text-gray-600 mt-1">
-              {currentMode === 'signin' && 'Sign in to your Saharam Express account'}
-              {currentMode === 'signup' && 'Join Saharam Express today'}
+              {currentMode === 'signin' && 'Sign in to your Saharan Express account'}
+              {currentMode === 'signup' && 'Join Saharan Express today'}
               {currentMode === 'forgot' && 'Enter your email to reset your password'}
             </p>
           </div>
@@ -178,7 +178,7 @@ export default function AuthModal({ isOpen, onClose, mode = 'signin' }: AuthModa
                   <input
                     type="email"
                     {...signinForm.register('email')}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharam-500 focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
                     placeholder="your@email.com"
                   />
                   <Mail className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
@@ -196,7 +196,7 @@ export default function AuthModal({ isOpen, onClose, mode = 'signin' }: AuthModa
                   <input
                     type={showPassword ? 'text' : 'password'}
                     {...signinForm.register('password')}
-                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharam-500 focus:border-transparent"
+                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
                     placeholder="••••••••"
                   />
                   <Lock className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
@@ -217,7 +217,7 @@ export default function AuthModal({ isOpen, onClose, mode = 'signin' }: AuthModa
                 <button
                   type="button"
                   onClick={() => setCurrentMode('forgot')}
-                  className="text-sm text-saharam-600 hover:text-saharam-700"
+                  className="text-sm text-saharan-600 hover:text-saharan-700"
                 >
                   Forgot password?
                 </button>
@@ -226,7 +226,7 @@ export default function AuthModal({ isOpen, onClose, mode = 'signin' }: AuthModa
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-saharam-500 text-white py-3 rounded-lg font-semibold hover:bg-saharam-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-saharan-500 text-white py-3 rounded-lg font-semibold hover:bg-saharan-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'Signing In...' : 'Sign In'}
               </button>
@@ -236,7 +236,7 @@ export default function AuthModal({ isOpen, onClose, mode = 'signin' }: AuthModa
                 <button
                   type="button"
                   onClick={() => setCurrentMode('signup')}
-                  className="text-saharam-600 hover:text-saharam-700 font-medium"
+                  className="text-saharan-600 hover:text-saharan-700 font-medium"
                 >
                   Sign up
                 </button>
@@ -256,7 +256,7 @@ export default function AuthModal({ isOpen, onClose, mode = 'signin' }: AuthModa
                     <input
                       type="text"
                       {...signupForm.register('firstName')}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharam-500 focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
                       placeholder="John"
                     />
                     <User className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
@@ -274,7 +274,7 @@ export default function AuthModal({ isOpen, onClose, mode = 'signin' }: AuthModa
                     <input
                       type="text"
                       {...signupForm.register('lastName')}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharam-500 focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
                       placeholder="Doe"
                     />
                     <User className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
@@ -293,7 +293,7 @@ export default function AuthModal({ isOpen, onClose, mode = 'signin' }: AuthModa
                   <input
                     type="email"
                     {...signupForm.register('email')}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharam-500 focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
                     placeholder="your@email.com"
                   />
                   <Mail className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
@@ -311,7 +311,7 @@ export default function AuthModal({ isOpen, onClose, mode = 'signin' }: AuthModa
                   <input
                     type="tel"
                     {...signupForm.register('phone')}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharam-500 focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
                     placeholder="08012345678"
                   />
                   <Phone className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
@@ -329,7 +329,7 @@ export default function AuthModal({ isOpen, onClose, mode = 'signin' }: AuthModa
                   <input
                     type={showPassword ? 'text' : 'password'}
                     {...signupForm.register('password')}
-                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharam-500 focus:border-transparent"
+                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
                     placeholder="••••••••"
                   />
                   <Lock className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
@@ -354,7 +354,7 @@ export default function AuthModal({ isOpen, onClose, mode = 'signin' }: AuthModa
                   <input
                     type={showConfirmPassword ? 'text' : 'password'}
                     {...signupForm.register('confirmPassword')}
-                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharam-500 focus:border-transparent"
+                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
                     placeholder="••••••••"
                   />
                   <Lock className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
@@ -374,7 +374,7 @@ export default function AuthModal({ isOpen, onClose, mode = 'signin' }: AuthModa
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-saharam-500 text-white py-3 rounded-lg font-semibold hover:bg-saharam-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-saharan-500 text-white py-3 rounded-lg font-semibold hover:bg-saharan-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'Creating Account...' : 'Create Account'}
               </button>
@@ -384,7 +384,7 @@ export default function AuthModal({ isOpen, onClose, mode = 'signin' }: AuthModa
                 <button
                   type="button"
                   onClick={() => setCurrentMode('signin')}
-                  className="text-saharam-600 hover:text-saharam-700 font-medium"
+                  className="text-saharan-600 hover:text-saharan-700 font-medium"
                 >
                   Sign in
                 </button>
@@ -403,7 +403,7 @@ export default function AuthModal({ isOpen, onClose, mode = 'signin' }: AuthModa
                   <input
                     type="email"
                     {...forgotForm.register('email')}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharam-500 focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
                     placeholder="your@email.com"
                   />
                   <Mail className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
@@ -416,7 +416,7 @@ export default function AuthModal({ isOpen, onClose, mode = 'signin' }: AuthModa
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-saharam-500 text-white py-3 rounded-lg font-semibold hover:bg-saharam-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-saharan-500 text-white py-3 rounded-lg font-semibold hover:bg-saharan-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'Sending...' : 'Send Reset Link'}
               </button>
@@ -425,7 +425,7 @@ export default function AuthModal({ isOpen, onClose, mode = 'signin' }: AuthModa
                 <button
                   type="button"
                   onClick={() => setCurrentMode('signin')}
-                  className="text-saharam-600 hover:text-saharam-700 font-medium"
+                  className="text-saharan-600 hover:text-saharan-700 font-medium"
                 >
                   Back to Sign In
                 </button>

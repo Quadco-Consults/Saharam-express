@@ -64,7 +64,12 @@ export default function AdminDashboard() {
 
   const fetchDashboardStats = async () => {
     try {
-      const response = await fetch('/api/admin/dashboard-stats')
+      const token = localStorage.getItem('auth_token')
+      const response = await fetch('/api/admin/dashboard-stats', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
       const data = await response.json()
 
       if (response.ok && data.success) {
@@ -106,7 +111,7 @@ export default function AdminDashboard() {
           <p className="text-gray-600 mb-4">Failed to load dashboard data</p>
           <button
             onClick={fetchDashboardStats}
-            className="px-4 py-2 bg-saharam-500 text-white rounded-lg hover:bg-saharam-600 transition-colors"
+            className="px-4 py-2 bg-saharan-500 text-white rounded-lg hover:bg-saharan-600 transition-colors"
           >
             Retry
           </button>
@@ -218,8 +223,8 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {todayStats.map((stat, index) => (
                 <div key={index} className="text-center">
-                  <div className="w-12 h-12 bg-saharam-100 rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <stat.icon className="w-6 h-6 text-saharam-600" />
+                  <div className="w-12 h-12 bg-saharan-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <stat.icon className="w-6 h-6 text-saharan-600" />
                   </div>
                   <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
                   <p className="text-sm text-gray-600 mt-1">{stat.name}</p>
@@ -237,7 +242,7 @@ export default function AdminDashboard() {
                   <h2 className="text-lg font-semibold text-gray-900">Recent Bookings</h2>
                   <a
                     href="/admin/bookings"
-                    className="text-saharam-600 hover:text-saharam-700 text-sm font-medium"
+                    className="text-saharan-600 hover:text-saharan-700 text-sm font-medium"
                   >
                     View all
                   </a>
@@ -281,7 +286,7 @@ export default function AdminDashboard() {
                   <h2 className="text-lg font-semibold text-gray-900">Upcoming Trips</h2>
                   <a
                     href="/admin/trips"
-                    className="text-saharam-600 hover:text-saharam-700 text-sm font-medium"
+                    className="text-saharan-600 hover:text-saharan-700 text-sm font-medium"
                   >
                     View all
                   </a>
@@ -292,8 +297,8 @@ export default function AdminDashboard() {
                   {upcomingTrips.map((trip) => (
                     <div key={trip.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-saharam-100 rounded-lg flex items-center justify-center">
-                          <Car className="w-5 h-5 text-saharam-600" />
+                        <div className="w-10 h-10 bg-saharan-100 rounded-lg flex items-center justify-center">
+                          <Car className="w-5 h-5 text-saharan-600" />
                         </div>
                         <div>
                           <p className="font-medium text-gray-900">
@@ -333,7 +338,7 @@ export default function AdminDashboard() {
                 href="/admin/trips/create"
                 className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                <Calendar className="w-8 h-8 text-saharam-600" />
+                <Calendar className="w-8 h-8 text-saharan-600" />
                 <div>
                   <p className="font-medium text-gray-900">Schedule Trip</p>
                   <p className="text-sm text-gray-600">Create a new trip</p>
@@ -343,7 +348,7 @@ export default function AdminDashboard() {
                 href="/admin/vehicles"
                 className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                <Car className="w-8 h-8 text-saharam-600" />
+                <Car className="w-8 h-8 text-saharan-600" />
                 <div>
                   <p className="font-medium text-gray-900">Manage Vehicles</p>
                   <p className="text-sm text-gray-600">Add or edit vehicles</p>
@@ -353,7 +358,7 @@ export default function AdminDashboard() {
                 href="/admin/analytics"
                 className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                <TrendingUp className="w-8 h-8 text-saharam-600" />
+                <TrendingUp className="w-8 h-8 text-saharan-600" />
                 <div>
                   <p className="font-medium text-gray-900">View Analytics</p>
                   <p className="text-sm text-gray-600">Business insights</p>

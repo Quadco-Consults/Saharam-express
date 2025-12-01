@@ -15,7 +15,7 @@ export interface TicketQRData {
 
 // Generate security hash for QR data
 function generateSecurityHash(data: Omit<TicketQRData, 'hash'>): string {
-  const secret = process.env.JWT_SECRET || 'saharam-express-secret'
+  const secret = process.env.JWT_SECRET || 'saharan-express-secret'
   const dataString = JSON.stringify(data)
 
   // Simple hash function (in production, use proper crypto)

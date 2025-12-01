@@ -75,7 +75,7 @@ function BookingSuccessContent() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-saharam-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-saharan-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Processing your booking...</p>
         </div>
       </div>
@@ -89,7 +89,7 @@ function BookingSuccessContent() {
           <p className="text-red-600 text-lg font-semibold mb-4">Booking not found</p>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 bg-saharam-500 text-white px-6 py-3 rounded-lg hover:bg-saharam-600 transition-colors"
+            className="inline-flex items-center gap-2 bg-saharan-500 text-white px-6 py-3 rounded-lg hover:bg-saharan-600 transition-colors"
           >
             Return Home
             <ArrowRight className="w-4 h-4" />
@@ -121,7 +121,7 @@ function BookingSuccessContent() {
             <div className="space-y-4">
               <div className="flex justify-between">
                 <span className="text-gray-600">Booking Reference</span>
-                <span className="font-mono font-bold text-saharam-600">{booking.booking_reference}</span>
+                <span className="font-mono font-bold text-saharan-600">{booking.booking_reference}</span>
               </div>
 
               <div className="flex justify-between">
@@ -158,7 +158,7 @@ function BookingSuccessContent() {
                 <button
                   onClick={generateQRCode}
                   disabled={generatingQR}
-                  className="w-full flex items-center justify-center gap-2 bg-saharam-500 text-white py-3 px-4 rounded-lg hover:bg-saharam-600 transition-colors disabled:opacity-50"
+                  className="w-full flex items-center justify-center gap-2 bg-saharan-500 text-white py-3 px-4 rounded-lg hover:bg-saharan-600 transition-colors disabled:opacity-50"
                 >
                   {generatingQR ? (
                     <>
@@ -186,7 +186,7 @@ function BookingSuccessContent() {
 
               <Link
                 href="/"
-                className="block w-full text-center bg-saharam-100 text-saharam-700 py-3 px-4 rounded-lg hover:bg-saharam-200 transition-colors"
+                className="block w-full text-center bg-saharan-100 text-saharan-700 py-3 px-4 rounded-lg hover:bg-saharan-200 transition-colors"
               >
                 Book Another Trip
               </Link>
@@ -221,7 +221,7 @@ function BookingSuccessContent() {
                 <button
                   onClick={generateQRCode}
                   disabled={generatingQR}
-                  className="bg-saharam-500 text-white py-2 px-4 rounded-lg hover:bg-saharam-600 transition-colors disabled:opacity-50"
+                  className="bg-saharan-500 text-white py-2 px-4 rounded-lg hover:bg-saharan-600 transition-colors disabled:opacity-50"
                 >
                   {generatingQR ? 'Generating...' : 'Generate Now'}
                 </button>
@@ -250,7 +250,7 @@ export default function BookingSuccessPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-saharam-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-saharan-500"></div>
       </div>
     }>
       <BookingSuccessContent />

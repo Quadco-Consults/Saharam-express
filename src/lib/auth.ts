@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { prisma } from './prisma'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'saharam-express-secret'
+const JWT_SECRET = process.env.JWT_SECRET || 'saharan-express-secret'
 
 export interface AuthUser {
   id: string

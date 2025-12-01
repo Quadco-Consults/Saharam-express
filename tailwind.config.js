@@ -8,7 +8,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'saharam': {
+        'saharan': {
           50: '#fdf7ed',
           100: '#f9ead6',
           200: '#f2d3ac',

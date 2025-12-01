@@ -35,16 +35,16 @@ export default function TripCard({ trip, onSelect, isSelected = false }: TripCar
       className={cn(
         "bg-white rounded-xl border-2 p-6 cursor-pointer transition-all hover:shadow-md",
         isSelected
-          ? "border-saharam-500 shadow-md ring-2 ring-saharam-100"
-          : "border-gray-200 hover:border-saharam-300"
+          ? "border-saharan-500 shadow-md ring-2 ring-saharan-100"
+          : "border-gray-200 hover:border-saharan-300"
       )}
       onClick={() => onSelect(trip)}
     >
       {/* Trip Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-saharam-100 rounded-full flex items-center justify-center">
-            <Car className="w-5 h-5 text-saharam-600" />
+          <div className="w-10 h-10 bg-saharan-100 rounded-full flex items-center justify-center">
+            <Car className="w-5 h-5 text-saharan-600" />
           </div>
           <div>
             <h3 className="font-semibold text-gray-900">
@@ -57,7 +57,7 @@ export default function TripCard({ trip, onSelect, isSelected = false }: TripCar
         </div>
 
         <div className="text-right">
-          <p className="text-2xl font-bold text-saharam-600">
+          <p className="text-2xl font-bold text-saharan-600">
             {formatCurrency((trip as any).basePrice || (trip as any).base_price || 4500)}
           </p>
           <p className="text-sm text-gray-600">per seat</p>
@@ -144,7 +144,7 @@ export default function TripCard({ trip, onSelect, isSelected = false }: TripCar
       {/* Select Button */}
       {isSelected && (
         <div className="mt-4 pt-4 border-t border-gray-200">
-          <button className="w-full bg-saharam-500 text-white py-2 rounded-lg font-medium hover:bg-saharam-600 transition-colors">
+          <button className="w-full bg-saharan-500 text-white py-2 rounded-lg font-medium hover:bg-saharan-600 transition-colors">
             Continue with this trip
           </button>
         </div>

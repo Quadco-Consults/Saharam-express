@@ -156,7 +156,7 @@ export default function BookingsPage() {
                   className={cn(
                     "px-4 py-2 rounded-md text-sm font-medium transition-colors",
                     filter === key
-                      ? "bg-white text-saharam-600 shadow-sm"
+                      ? "bg-white text-saharan-600 shadow-sm"
                       : "text-gray-600 hover:text-gray-900"
                   )}
                 >
@@ -178,7 +178,7 @@ export default function BookingsPage() {
               </p>
               <a
                 href="#search"
-                className="inline-flex items-center px-6 py-3 bg-saharam-500 text-white rounded-lg hover:bg-saharam-600 transition-colors"
+                className="inline-flex items-center px-6 py-3 bg-saharan-500 text-white rounded-lg hover:bg-saharan-600 transition-colors"
               >
                 Book a Trip
               </a>
@@ -269,7 +269,7 @@ export default function BookingsPage() {
                     {booking.status === 'confirmed' && booking.payment_status === 'paid' && (
                       <div className="mt-6 pt-4 border-t border-gray-200">
                         <div className="flex gap-3">
-                          <button className="px-4 py-2 bg-saharam-500 text-white rounded-lg hover:bg-saharam-600 transition-colors text-sm">
+                          <button className="px-4 py-2 bg-saharan-500 text-white rounded-lg hover:bg-saharan-600 transition-colors text-sm">
                             View Ticket
                           </button>
                           <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm">

@@ -61,7 +61,12 @@ export default function AdminDriversPage() {
 
   const loadDrivers = async () => {
     try {
-      const response = await fetch('/api/admin/drivers')
+      const token = localStorage.getItem('auth_token')
+      const response = await fetch('/api/admin/drivers', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
       const result = await response.json()
 
       if (result.success) {
@@ -153,10 +158,12 @@ export default function AdminDriversPage() {
         payload.is_verified = editingDriver.is_verified
       }
 
+      const token = localStorage.getItem('auth_token')
       const response = await fetch('/api/admin/drivers', {
         method: editingDriver ? 'PUT' : 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(payload),
       })
@@ -187,8 +194,12 @@ export default function AdminDriversPage() {
     }
 
     try {
+      const token = localStorage.getItem('auth_token')
       const response = await fetch(`/api/admin/drivers?id=${driverId}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       })
 
       const result = await response.json()
@@ -208,10 +219,12 @@ export default function AdminDriversPage() {
 
   const toggleDriverStatus = async (driver: Driver) => {
     try {
+      const token = localStorage.getItem('auth_token')
       const response = await fetch('/api/admin/drivers', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           ...driver,
@@ -256,7 +269,7 @@ export default function AdminDriversPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-saharam-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-saharan-500"></div>
       </div>
     )
   }
@@ -268,7 +281,7 @@ export default function AdminDriversPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
-              <Users className="w-8 h-8 text-saharam-600" />
+              <Users className="w-8 h-8 text-saharan-600" />
               Driver Management
             </h1>
             <p className="text-gray-600 mt-1">Manage driver accounts and track performance</p>

@@ -1,8 +1,8 @@
-# 🚀 Quick Deploy - Saharam Express Ticketing System
+# 🚀 Quick Deploy - Saharan Express Ticketing System
 
 ## Automated 1-Click Deployment
 
-Your Saharam Express ticketing system is now ready for automated deployment!
+Your Saharan Express ticketing system is now ready for automated deployment!
 
 ### Step 1: Run the Auto-Deploy Script
 
