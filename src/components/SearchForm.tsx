@@ -1,14 +1,22 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { ArrowRightLeft, Calendar, Users, Search } from 'lucide-react'
 
 export default function SearchForm() {
+  const router = useRouter()
   const [formData, setFormData] = useState({
     from: 'Kano',
     to: 'Kaduna',
     departureDate: '',
     passengers: 1
   })
+  const [minDate, setMinDate] = useState('')
+
+  useEffect(() => {
+    // Set minimum date on client side only to avoid hydration mismatch
+    setMinDate(new Date().toISOString().split('T')[0])
+  }, [])
 
   const handleSwapLocations = () => {
     setFormData(prev => ({
@@ -36,7 +44,7 @@ export default function SearchForm() {
     })
 
     // Navigate to search page
-    window.location.href = `/search?${searchParams.toString()}`
+    router.push(`/search?${searchParams.toString()}`)
   }
 
   return (
@@ -101,7 +109,7 @@ export default function SearchForm() {
                     type="date"
                     value={formData.departureDate}
                     onChange={(e) => setFormData(prev => ({ ...prev, departureDate: e.target.value }))}
-                    min={new Date().toISOString().split('T')[0]}
+                    min={minDate}
                     className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
                     required
                   />
