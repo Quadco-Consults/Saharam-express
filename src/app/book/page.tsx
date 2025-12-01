@@ -19,11 +19,14 @@ import {
 import Header from '@/components/Header'
 import SeatMap from '@/components/SeatMap'
 import BankTransferPayment from '@/components/BankTransferPayment'
+import ErrorBoundary from '@/components/ErrorBoundary'
+import OfflineIndicator from '@/components/OfflineIndicator'
 import { useAuth } from '@/hooks/useAuth'
 import { Trip } from '@/types'
 import { formatDateTime, formatCurrency, formatSeatNumbers } from '@/utils/formatters'
 import { cn } from '@/utils/cn'
 import { paymentManager } from '@/lib/payments/payment-manager'
+import { apiClient } from '@/lib/api-client'
 
 export const dynamic = 'force-dynamic'
 
@@ -113,14 +116,13 @@ function BookContent() {
 
   const fetchTripDetails = async () => {
     try {
-      const response = await fetch(`/api/trips/${tripId}`)
-      const data = await response.json()
+      const response = await apiClient.getTripDetails(tripId!)
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to fetch trip details')
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to fetch trip details')
       }
 
-      setTripDetails(data.data)
+      setTripDetails(response.data)
     } catch (error: any) {
       console.error('Error fetching trip:', error)
       setError(error.message || 'Failed to load trip details')
@@ -160,41 +162,26 @@ function BookContent() {
 
     try {
       // Create booking first
-      const bookingResponse = await fetch('/api/bookings/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          tripId: tripDetails.id,
-          passengerName: bookingData.passengerName,
-          passengerPhone: bookingData.passengerPhone,
-          passengerEmail: bookingData.passengerEmail,
-          seatNumbers: selectedSeats,
-          loyaltyPointsToUse: 0 // Default to 0 for now
-        })
+      const bookingResponse = await apiClient.createBooking({
+        tripId: tripDetails.id,
+        passengerName: bookingData.passengerName,
+        passengerPhone: bookingData.passengerPhone,
+        passengerEmail: bookingData.passengerEmail,
+        seatNumbers: selectedSeats,
+        loyaltyPointsToUse: 0 // Default to 0 for now
       })
 
-      const bookingResult = await bookingResponse.json()
-
-      if (!bookingResponse.ok) {
-        throw new Error(bookingResult.error || 'Failed to create booking')
+      if (!bookingResponse.success) {
+        throw new Error(bookingResponse.error || 'Failed to create booking')
       }
 
-      setCreatedBooking(bookingResult.data.booking)
+      setCreatedBooking(bookingResponse.data.booking)
 
       // Initialize payment
-      const paymentResponse = await fetch('/api/payments/initialize', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          provider: paymentMethod,
-          bookingId: bookingResult.data.booking.id,
-        })
-      })
+      const paymentResponse = await apiClient.initializePayment(paymentMethod, bookingResponse.data.booking.id)
 
-      const paymentResult = await paymentResponse.json()
-
-      if (!paymentResponse.ok) {
-        throw new Error(paymentResult.error || 'Failed to initialize payment')
+      if (!paymentResponse.success) {
+        throw new Error(paymentResponse.error || 'Failed to initialize payment')
       }
 
       // Handle different payment methods
@@ -203,7 +190,7 @@ function BookContent() {
         setSelectedPaymentMethod('bank_transfer')
       } else {
         // Redirect to payment gateway for paystack/opay
-        window.location.href = paymentResult.data.authorizationUrl
+        window.location.href = paymentResponse.data.authorizationUrl
       }
 
     } catch (error: any) {
@@ -229,6 +216,7 @@ function BookContent() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
+        <OfflineIndicator />
         <Header />
         <div className="container mx-auto px-6 py-12">
           <div className="max-w-4xl mx-auto">
@@ -280,6 +268,7 @@ function BookContent() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <OfflineIndicator />
       <Header />
 
       <div className="container mx-auto px-6 py-8">
@@ -576,12 +565,14 @@ function BookContent() {
 
 export default function BookPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-saharan-500"></div>
-      </div>
-    }>
-      <BookContent />
-    </Suspense>
+    <ErrorBoundary>
+      <Suspense fallback={
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-saharan-500"></div>
+        </div>
+      }>
+        <BookContent />
+      </Suspense>
+    </ErrorBoundary>
   )
 }

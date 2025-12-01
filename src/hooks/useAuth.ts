@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { apiClient } from '@/lib/api-client'
 
 export interface AuthUser {
   id: string
@@ -22,20 +23,15 @@ export function useAuth() {
 
     const token = localStorage.getItem('auth_token')
     if (token) {
-      // Verify token and get user data
-      fetch('/api/auth/verify', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.user) {
-            setUser(data.user)
+      // Verify token and get user data using API client with fallbacks
+      apiClient.verifyToken(token)
+        .then(response => {
+          if (response.success && response.data?.user) {
+            setUser(response.data.user)
           } else {
             if (typeof window !== 'undefined') {
-            localStorage.removeItem('auth_token')
-          }
+              localStorage.removeItem('auth_token')
+            }
           }
         })
         .catch(() => {
@@ -91,30 +87,23 @@ export function useAuth() {
 
   const signIn = async (email: string, password: string) => {
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      })
+      const response = await apiClient.login(email, password)
 
-      const data = await response.json()
-
-      if (data.error) {
-        return { data: null, error: data.error }
+      if (!response.success) {
+        return { data: null, error: response.error || 'Login failed' }
       }
 
-      if (data.token) {
+      if (response.data?.token && response.data?.user) {
         if (typeof window !== 'undefined') {
-          localStorage.setItem('auth_token', data.token)
+          localStorage.setItem('auth_token', response.data.token)
         }
-        setUser(data.user)
+        setUser(response.data.user)
+        return { data: response.data.user, error: null }
       }
 
-      return { data: data.user, error: null }
+      return { data: null, error: 'Invalid login response' }
     } catch (error) {
-      return { data: null, error: 'Login failed' }
+      return { data: null, error: 'Login failed - please try again' }
     }
   }
 

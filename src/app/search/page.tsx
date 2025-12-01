@@ -7,8 +7,11 @@ import TripCard from '@/components/TripCard'
 import { useAuth } from '@/hooks/useAuth'
 import AuthModal from '@/components/AuthModal'
 import BookingOptionsModal from '@/components/BookingOptionsModal'
+import ErrorBoundary from '@/components/ErrorBoundary'
+import OfflineIndicator from '@/components/OfflineIndicator'
 import { Trip } from '@/types'
 import { formatDate } from '@/utils/formatters'
+import { apiClient } from '@/lib/api-client'
 
 export const dynamic = 'force-dynamic'
 
@@ -53,21 +56,13 @@ function SearchContent() {
     setError(null)
 
     try {
-      const queryParams = new URLSearchParams({
-        from,
-        to,
-        date,
-        passengers: passengers.toString()
-      })
+      const response = await apiClient.searchTrips(from, to, date, passengers)
 
-      const response = await fetch(`/api/trips/search?${queryParams}`)
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to search trips')
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to search trips')
       }
 
-      setSearchResults(data.data)
+      setSearchResults(response.data)
     } catch (error: any) {
       console.error('Search error:', error)
       setError(error.message || 'Failed to search for trips')
@@ -122,6 +117,7 @@ function SearchContent() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <OfflineIndicator />
       <Header />
 
       <div className="container mx-auto px-6 py-8">
@@ -282,12 +278,14 @@ function SearchContent() {
 
 export default function SearchPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-saharan-500"></div>
-      </div>
-    }>
-      <SearchContent />
-    </Suspense>
+    <ErrorBoundary>
+      <Suspense fallback={
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-saharan-500"></div>
+        </div>
+      }>
+        <SearchContent />
+      </Suspense>
+    </ErrorBoundary>
   )
 }
