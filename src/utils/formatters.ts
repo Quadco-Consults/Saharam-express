@@ -2,6 +2,11 @@ import { format, parseISO, addHours } from 'date-fns'
 
 // Format currency in Nigerian Naira
 export const formatCurrency = (amount: number): string => {
+  // Handle undefined, null, or invalid numbers
+  if (amount === undefined || amount === null || isNaN(amount)) {
+    return '₦0'
+  }
+
   return new Intl.NumberFormat('en-NG', {
     style: 'currency',
     currency: 'NGN',
@@ -48,6 +53,11 @@ export const formatDateTime = (date: string | Date): string => {
 
 // Format duration in hours and minutes
 export const formatDuration = (minutes: number): string => {
+  // Handle undefined, null, or invalid numbers
+  if (minutes === undefined || minutes === null || isNaN(minutes) || minutes < 0) {
+    return '0m'
+  }
+
   const hours = Math.floor(minutes / 60)
   const remainingMinutes = minutes % 60
 
