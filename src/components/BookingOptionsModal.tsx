@@ -45,8 +45,8 @@ export default function BookingOptionsModal({
             <h3 className="font-semibold text-gray-800 mb-2">Selected Trip</h3>
             <div className="text-sm text-gray-600">
               <p>{tripDetails.route.fromCity} → {tripDetails.route.toCity}</p>
-              <p>Departure: {new Date(tripDetails.departureTime).toLocaleString()}</p>
-              <p className="font-semibold text-saharan-600">₦{tripDetails.basePrice.toLocaleString()}</p>
+              <p>Departure: {tripDetails.departureTime ? new Date(tripDetails.departureTime).toLocaleString() : 'TBD'}</p>
+              <p className="font-semibold text-saharan-600">₦{tripDetails.basePrice ? tripDetails.basePrice.toLocaleString() : '0'}</p>
             </div>
           </div>
         )}

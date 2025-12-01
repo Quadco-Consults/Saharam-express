@@ -253,6 +253,9 @@ export default function AdminRoutesPage() {
   }
 
   const formatCurrency = (amount: number): string => {
+    if (amount === undefined || amount === null || isNaN(amount)) {
+      return '₦0'
+    }
     return `₦${amount.toLocaleString()}`
   }
 

@@ -296,7 +296,7 @@ export default function AdminAnalyticsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-blue-100">Average Booking Value</p>
-                <p className="text-2xl font-bold mt-2">₦{(analyticsData.revenue.thisMonth / analyticsData.bookings.thisMonth).toLocaleString()}</p>
+                <p className="text-2xl font-bold mt-2">₦{analyticsData?.revenue?.thisMonth && analyticsData?.bookings?.thisMonth ? (analyticsData.revenue.thisMonth / analyticsData.bookings.thisMonth).toLocaleString() : '0'}</p>
               </div>
               <TrendingUp className="w-8 h-8 text-blue-200" />
             </div>

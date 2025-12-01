@@ -159,6 +159,9 @@ export default function QRScanner({ onScanSuccess, onScanError, isActive }: QRSc
   }
 
   const formatCurrency = (amount: number) => {
+    if (amount === undefined || amount === null || isNaN(amount)) {
+      return '₦0'
+    }
     return new Intl.NumberFormat('en-NG', {
       style: 'currency',
       currency: 'NGN'
@@ -166,13 +169,18 @@ export default function QRScanner({ onScanSuccess, onScanError, isActive }: QRSc
   }
 
   const formatDateTime = (dateString: string) => {
-    return new Date(dateString).toLocaleString('en-NG', {
+    if (!dateString) return 'TBD'
+    try {
+      return new Date(dateString).toLocaleString('en-NG', {
       weekday: 'short',
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
     })
+    } catch (error) {
+      return 'Invalid date'
+    }
   }
 
   return (

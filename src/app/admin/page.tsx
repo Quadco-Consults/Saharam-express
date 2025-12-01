@@ -132,14 +132,14 @@ export default function AdminDashboard() {
     },
     {
       name: 'Total Bookings',
-      value: overview.totalBookings.toLocaleString(),
+      value: overview.totalBookings ? overview.totalBookings.toLocaleString() : '0',
       icon: Calendar,
       color: 'blue',
       trend: '+8.2%'
     },
     {
       name: 'Active Users',
-      value: overview.activeUsers.toLocaleString(),
+      value: overview.activeUsers ? overview.activeUsers.toLocaleString() : '0',
       icon: Users,
       color: 'purple',
       trend: '+5.1%'
