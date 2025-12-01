@@ -2,7 +2,7 @@ import { paystackService } from './paystack'
 import { oPayService } from './opay'
 import { prisma } from '@/lib/prisma'
 
-export type PaymentProvider = 'paystack' | 'opay'
+export type PaymentProvider = 'paystack' | 'opay' | 'bank_transfer'
 
 export interface PaymentInitializeData {
   bookingId: string
@@ -55,6 +55,8 @@ export class PaymentManager {
         return await this.initializePaystackPayment(data, reference)
       } else if (data.provider === 'opay') {
         return await this.initializeOpayPayment(data, reference)
+      } else if (data.provider === 'bank_transfer') {
+        return await this.initializeBankTransferPayment(data, reference)
       } else {
         throw new Error(`Unsupported payment provider: ${data.provider}`)
       }
@@ -78,6 +80,8 @@ export class PaymentManager {
         return await this.verifyPaystackPayment(reference)
       } else if (provider === 'opay') {
         return await this.verifyOpayPayment(reference)
+      } else if (provider === 'bank_transfer') {
+        return await this.verifyBankTransferPayment(reference)
       } else {
         throw new Error(`Unsupported payment provider: ${provider}`)
       }
@@ -279,12 +283,69 @@ export class PaymentManager {
   }
 
   /**
+   * Initialize Bank Transfer payment
+   */
+  private async initializeBankTransferPayment(
+    data: PaymentInitializeData,
+    reference: string
+  ): Promise<PaymentResult> {
+    try {
+      // Update booking status to pending payment with bank transfer
+      await prisma.booking.update({
+        where: { id: data.bookingId },
+        data: {
+          paymentStatus: 'PENDING'
+        }
+      })
+
+      return {
+        success: true,
+        provider: 'bank_transfer',
+        reference,
+        message: 'Bank transfer payment initialized. Please transfer to provided account details and upload receipt.'
+      }
+    } catch (error) {
+      throw new Error(`Bank transfer initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
+  }
+
+  /**
+   * Verify Bank Transfer payment (manual verification based on uploaded receipt)
+   */
+  private async verifyBankTransferPayment(reference: string): Promise<PaymentVerificationResult> {
+    try {
+      // For bank transfer, we check if receipt has been uploaded and approved
+      const booking = await prisma.booking.findFirst({
+        where: { paymentReference: reference },
+        include: { paymentReceipt: true }
+      })
+
+      if (!booking) {
+        throw new Error('Booking not found')
+      }
+
+      // Check if receipt is uploaded and approved
+      const hasApprovedReceipt = booking.paymentReceipt?.status === 'approved'
+
+      return {
+        success: hasApprovedReceipt,
+        provider: 'bank_transfer',
+        reference,
+        status: hasApprovedReceipt ? 'success' : 'pending',
+        amount: Number(booking.totalAmount)
+      }
+    } catch (error) {
+      throw new Error(`Bank transfer verification failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
+  }
+
+  /**
    * Generate a unique payment reference
    */
   private generateReference(provider: PaymentProvider): string {
     const timestamp = Date.now().toString()
     const random = Math.random().toString(36).substring(2, 8).toUpperCase()
-    const providerPrefix = provider === 'paystack' ? 'PST' : 'OPY'
+    const providerPrefix = provider === 'paystack' ? 'PST' : provider === 'opay' ? 'OPY' : 'BNK'
     return `SAH_${providerPrefix}_${timestamp}_${random}`
   }
 
@@ -302,8 +363,49 @@ export class PaymentManager {
         code: 'opay',
         name: 'OPay',
         description: 'Pay with OPay wallet or bank transfer'
+      },
+      {
+        code: 'bank_transfer',
+        name: 'Direct Bank Transfer',
+        description: 'Transfer directly to company account with receipt upload'
       }
     ]
+  }
+
+  /**
+   * Get company bank account details for manual transfers
+   */
+  getCompanyBankDetails() {
+    return {
+      companyName: 'Saharan Express Limited',
+      accounts: [
+        {
+          bankName: 'First Bank of Nigeria',
+          accountName: 'Saharan Express Limited',
+          accountNumber: '2034567890',
+          sortCode: '011151003'
+        },
+        {
+          bankName: 'Guaranty Trust Bank (GTB)',
+          accountName: 'Saharan Express Limited',
+          accountNumber: '0123456789',
+          sortCode: '058152036'
+        },
+        {
+          bankName: 'Zenith Bank',
+          accountName: 'Saharan Express Limited',
+          accountNumber: '1234567890',
+          sortCode: '057150013'
+        }
+      ],
+      paymentInstructions: [
+        'Transfer the exact amount to any of the above accounts',
+        'Use your booking reference as the transfer narration/description',
+        'Take a screenshot or photo of the successful transfer receipt',
+        'Upload the receipt using the form below',
+        'Your booking will be confirmed within 2-4 hours after receipt verification'
+      ]
+    }
   }
 }
 

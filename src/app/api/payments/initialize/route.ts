@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma'
 
 const initializePaymentSchema = z.object({
   bookingId: z.string().min(1, 'Booking ID is required'),
-  provider: z.enum(['paystack', 'opay'] as const),
+  provider: z.enum(['paystack', 'opay', 'bank_transfer'] as const),
   returnUrl: z.string().url().optional()
 })
 

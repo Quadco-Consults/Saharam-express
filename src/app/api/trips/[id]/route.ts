@@ -134,7 +134,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         confirmed: trip.bookings.filter(b => b.status === 'CONFIRMED').length,
         pending: trip.bookings.filter(b => b.status === 'PENDING').length
       },
-      amenities: getVehicleAmenities(trip.vehicle.model),
+      amenities: getVehicleAmenities(trip.vehicle.vehicleType || 'HIACE', trip.vehicle.model),
       isBookable: trip.isActive &&
                  trip.availableSeats > 0 &&
                  trip.departureTime > new Date(),
@@ -203,16 +203,31 @@ function generateSeatMap(capacity: number, bookedSeats: string[]): Array<{
   return seatMap
 }
 
-function getVehicleAmenities(model: string): string[] {
+function getVehicleAmenities(vehicleType: string, model: string): string[] {
   const basicAmenities = ['Air Conditioning', 'Comfortable Seating', 'Professional Driver']
 
-  if (model.toLowerCase().includes('hiace') || model.toLowerCase().includes('bus')) {
-    return [...basicAmenities, 'Spacious Interior', 'Overhead Storage']
-  }
+  // Amenities based on vehicle type
+  switch (vehicleType.toUpperCase()) {
+    case 'SIENNA':
+      return [...basicAmenities, 'Premium Interior', 'Spacious Legroom', 'USB Charging', 'Quiet Ride']
 
-  if (model.toLowerCase().includes('luxury') || model.toLowerCase().includes('executive')) {
-    return [...basicAmenities, 'Wi-Fi', 'USB Charging', 'Entertainment System', 'Refreshments']
-  }
+    case 'BUS':
+      return [...basicAmenities, 'Large Capacity', 'Overhead Storage', 'Wide Aisles', 'Extra Luggage Space']
 
-  return basicAmenities
+    case 'SALON_CAR':
+      return [...basicAmenities, 'Luxury Interior', 'Privacy', 'Executive Seating', 'Premium Sound System']
+
+    case 'HIACE':
+      return [...basicAmenities, 'Spacious Interior', 'Overhead Storage', 'Reliable Engine']
+
+    case 'COASTER':
+      return [...basicAmenities, 'Mid-Size Comfort', 'Good Visibility', 'Smooth Ride', 'Adequate Storage']
+
+    default:
+      // Fallback to model-based detection for backward compatibility
+      if (model.toLowerCase().includes('luxury') || model.toLowerCase().includes('executive')) {
+        return [...basicAmenities, 'Wi-Fi', 'USB Charging', 'Entertainment System', 'Refreshments']
+      }
+      return basicAmenities
+  }
 }

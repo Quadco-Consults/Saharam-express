@@ -6,6 +6,7 @@ import { z } from 'zod'
 const vehicleSchema = z.object({
   plate_number: z.string().min(1, 'Plate number is required'),
   model: z.string().min(1, 'Model is required'),
+  vehicle_type: z.enum(['SIENNA', 'BUS', 'SALON_CAR', 'HIACE', 'COASTER']).default('HIACE'),
   capacity: z.number().min(1, 'Capacity must be at least 1'),
   year: z.number().min(1900, 'Year must be valid'),
   color: z.string().optional(),
@@ -30,6 +31,7 @@ export async function GET(request: NextRequest) {
       id: vehicle.id,
       plate_number: vehicle.plateNumber,
       model: vehicle.model,
+      vehicle_type: vehicle.vehicleType,
       capacity: vehicle.capacity,
       year: vehicle.year,
       color: vehicle.color || '',
@@ -86,6 +88,7 @@ export async function POST(request: NextRequest) {
       data: {
         plateNumber: data.plate_number,
         model: data.model,
+        vehicleType: data.vehicle_type,
         capacity: data.capacity,
         year: data.year,
         status: data.is_active ? 'ACTIVE' : 'INACTIVE',
@@ -100,6 +103,7 @@ export async function POST(request: NextRequest) {
           id: vehicle.id,
           plate_number: vehicle.plateNumber,
           model: vehicle.model,
+          vehicle_type: vehicle.vehicleType,
           capacity: vehicle.capacity,
           year: vehicle.year,
           is_active: vehicle.status === 'ACTIVE'
@@ -169,6 +173,7 @@ export async function PUT(request: NextRequest) {
     const updateData: any = {}
     if (data.plate_number) updateData.plateNumber = data.plate_number
     if (data.model) updateData.model = data.model
+    if (data.vehicle_type) updateData.vehicleType = data.vehicle_type
     if (data.capacity) updateData.capacity = data.capacity
     if (data.year) updateData.year = data.year
     if (data.is_active !== undefined) updateData.status = data.is_active ? 'ACTIVE' : 'INACTIVE'
@@ -186,6 +191,7 @@ export async function PUT(request: NextRequest) {
           id: vehicle.id,
           plate_number: vehicle.plateNumber,
           model: vehicle.model,
+          vehicle_type: vehicle.vehicleType,
           capacity: vehicle.capacity,
           year: vehicle.year,
           is_active: vehicle.status === 'ACTIVE'

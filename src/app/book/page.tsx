@@ -13,14 +13,17 @@ import {
   Mail,
   CreditCard,
   Shield,
-  CheckCircle
+  CheckCircle,
+  Building2
 } from 'lucide-react'
 import Header from '@/components/Header'
 import SeatMap from '@/components/SeatMap'
+import BankTransferPayment from '@/components/BankTransferPayment'
 import { useAuth } from '@/hooks/useAuth'
 import { Trip } from '@/types'
 import { formatDateTime, formatCurrency, formatSeatNumbers } from '@/utils/formatters'
 import { cn } from '@/utils/cn'
+import { paymentManager } from '@/lib/payments/payment-manager'
 
 export const dynamic = 'force-dynamic'
 
@@ -72,6 +75,9 @@ function BookContent() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [step, setStep] = useState<'seats' | 'details' | 'payment'>('seats')
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'paystack' | 'opay' | 'bank_transfer' | null>(null)
+  const [bookingData, setBookingData] = useState<BookingFormData | null>(null)
+  const [createdBooking, setCreatedBooking] = useState<any>(null)
 
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -143,12 +149,12 @@ function BookContent() {
 
   const handleContinueToPayment = (data: BookingFormData) => {
     // Store booking data for payment
+    setBookingData(data)
     setStep('payment')
-    initiatePayment(data)
   }
 
-  const initiatePayment = async (bookingData: BookingFormData) => {
-    if (!tripDetails || selectedSeats.length === 0) return
+  const initiatePayment = async (paymentMethod: 'paystack' | 'opay' | 'bank_transfer') => {
+    if (!tripDetails || selectedSeats.length === 0 || !bookingData) return
 
     setIsSubmitting(true)
 
@@ -162,8 +168,8 @@ function BookContent() {
           passengerName: bookingData.passengerName,
           passengerPhone: bookingData.passengerPhone,
           passengerEmail: bookingData.passengerEmail,
-          selectedSeats,
-          totalAmount: tripDetails.pricing.basePrice * selectedSeats.length
+          seatNumbers: selectedSeats,
+          loyaltyPointsToUse: 0 // Default to 0 for now
         })
       })
 
@@ -173,17 +179,15 @@ function BookContent() {
         throw new Error(bookingResult.error || 'Failed to create booking')
       }
 
+      setCreatedBooking(bookingResult.data.booking)
+
       // Initialize payment
       const paymentResponse = await fetch('/api/payments/initialize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          gateway: 'paystack', // Default to Paystack
+          provider: paymentMethod,
           bookingId: bookingResult.data.booking.id,
-          amount: tripDetails.pricing.basePrice * selectedSeats.length,
-          email: bookingData.passengerEmail,
-          customerName: bookingData.passengerName,
-          customerPhone: bookingData.passengerPhone,
         })
       })
 
@@ -193,16 +197,31 @@ function BookContent() {
         throw new Error(paymentResult.error || 'Failed to initialize payment')
       }
 
-      // Redirect to payment gateway
-      window.location.href = paymentResult.data.authorizationUrl
+      // Handle different payment methods
+      if (paymentMethod === 'bank_transfer') {
+        // Bank transfer doesn't redirect, it shows the upload interface
+        setSelectedPaymentMethod('bank_transfer')
+      } else {
+        // Redirect to payment gateway for paystack/opay
+        window.location.href = paymentResult.data.authorizationUrl
+      }
 
     } catch (error: any) {
       console.error('Booking error:', error)
       setError(error.message || 'Failed to process booking')
-      setStep('details')
+      setStep('payment')
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  const handleBankTransferSuccess = (reference: string) => {
+    // Navigate to success page
+    router.push(`/booking/success?reference=${reference}`)
+  }
+
+  const handleBankTransferError = (error: string) => {
+    setError(error)
   }
 
   const totalAmount = tripDetails ? tripDetails.pricing.basePrice * selectedSeats.length : 0
@@ -398,6 +417,71 @@ function BookContent() {
                       </button>
                     </div>
                   </form>
+                </div>
+              )}
+
+              {step === 'payment' && (
+                <div className="space-y-6">
+                  {/* Show bank transfer interface if selected */}
+                  {selectedPaymentMethod === 'bank_transfer' && createdBooking && bookingData ? (
+                    <BankTransferPayment
+                      bookingData={{
+                        bookingId: createdBooking.id,
+                        amount: totalAmount,
+                        reference: createdBooking.paymentReference || '',
+                        customerEmail: bookingData.passengerEmail,
+                        customerName: bookingData.passengerName,
+                        customerPhone: bookingData.passengerPhone
+                      }}
+                      onSuccess={handleBankTransferSuccess}
+                      onError={handleBankTransferError}
+                    />
+                  ) : (
+                    /* Payment method selection */
+                    <div className="bg-white rounded-xl p-6 border border-gray-200">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-6">Choose Payment Method</h3>
+
+                      <div className="space-y-4">
+                        {paymentManager.getAvailableProviders().map((provider) => (
+                          <button
+                            key={provider.code}
+                            onClick={() => initiatePayment(provider.code)}
+                            disabled={isSubmitting}
+                            className="w-full p-4 border-2 border-gray-200 rounded-xl hover:border-saharan-300 hover:bg-saharan-50 transition-all text-left disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            <div className="flex items-center gap-4">
+                              {provider.code === 'paystack' && <CreditCard className="w-8 h-8 text-blue-600" />}
+                              {provider.code === 'opay' && <CreditCard className="w-8 h-8 text-green-600" />}
+                              {provider.code === 'bank_transfer' && <Building2 className="w-8 h-8 text-orange-600" />}
+
+                              <div>
+                                <h4 className="font-semibold text-gray-900">{provider.name}</h4>
+                                <p className="text-sm text-gray-600">{provider.description}</p>
+                              </div>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+
+                      <div className="flex gap-4 pt-6">
+                        <button
+                          type="button"
+                          onClick={() => setStep('details')}
+                          disabled={isSubmitting}
+                          className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+                        >
+                          Back to Details
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Error Display */}
+                  {error && (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                      <p className="text-red-700">{error}</p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

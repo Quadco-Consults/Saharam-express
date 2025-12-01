@@ -36,6 +36,14 @@ enum VehicleStatus {
   INACTIVE
 }
 
+enum VehicleType {
+  SIENNA
+  BUS
+  SALON_CAR
+  HIACE
+  COASTER
+}
+
 enum DriverStatus {
   ACTIVE
   INACTIVE
@@ -46,6 +54,12 @@ enum NotificationType {
   SMS
   EMAIL
   PUSH
+}
+
+enum PaymentReceiptStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 // Models
@@ -62,12 +76,14 @@ model User {
   updatedAt     DateTime @updatedAt
 
   // Relations
-  bookings             Booking[]
-  loyaltyTransactions  LoyaltyTransaction[]
-  supportTickets       SupportTicket[]
-  supportMessages      SupportMessage[]
-  notifications        Notification[]
-  adminSettingsUpdated AdminSetting[]
+  bookings                 Booking[]
+  loyaltyTransactions      LoyaltyTransaction[]
+  supportTickets           SupportTicket[]
+  supportMessages          SupportMessage[]
+  notifications            Notification[]
+  adminSettingsUpdated     AdminSetting[]
+  uploadedPaymentReceipts  PaymentReceipt[] @relation("PaymentReceiptUploader")
+  verifiedPaymentReceipts  PaymentReceipt[] @relation("PaymentReceiptVerifier")
 
   @@map("users")
 }
@@ -94,6 +110,7 @@ model Vehicle {
   id              String        @id @default(cuid())
   plateNumber     String        @unique
   model           String
+  vehicleType     VehicleType   @default(HIACE)
   capacity        Int
   year            Int?
   status          VehicleStatus @default(ACTIVE)
@@ -176,6 +193,7 @@ model Booking {
   seatBookings         SeatBooking[]
   loyaltyTransactions  LoyaltyTransaction[]
   supportTickets       SupportTicket[]
+  paymentReceipt       PaymentReceipt?
 
   @@map("bookings")
 }
@@ -275,4 +293,30 @@ model SupportMessage {
   user   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("support_messages")
+}
+
+model PaymentReceipt {
+  id               String               @id @default(cuid())
+  bookingId        String               @unique
+  receiptUrl       String // URL to the uploaded receipt image
+  fileName         String // Original filename
+  fileSize         Int // File size in bytes
+  mimeType         String // File MIME type (image/png, image/jpeg, etc.)
+  status           PaymentReceiptStatus @default(PENDING)
+  uploadedBy       String? // User ID who uploaded (for guest bookings, can be null)
+  verifiedBy       String? // Admin user ID who verified
+  verificationNote String? // Admin notes during verification
+  rejectionReason  String? // Reason for rejection if status is REJECTED
+  amountPaid       Decimal?             @db.Decimal(10, 2) // Amount shown in receipt
+  transferDate     DateTime? // Date of transfer as shown in receipt
+  senderAccount    String? // Sender account details from receipt
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+
+  // Relations
+  booking    Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  uploader   User?   @relation("PaymentReceiptUploader", fields: [uploadedBy], references: [id], onDelete: SetNull)
+  verifier   User?   @relation("PaymentReceiptVerifier", fields: [verifiedBy], references: [id], onDelete: SetNull)
+
+  @@map("payment_receipts")
 }

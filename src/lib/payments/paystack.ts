@@ -139,6 +139,16 @@ class PaystackService {
     })
   }
 
+  // Convert Naira to Kobo (multiply by 100)
+  toKobo(nairaAmount: number): number {
+    return Math.round(nairaAmount * 100)
+  }
+
+  // Convert Kobo to Naira (divide by 100)
+  fromKobo(koboAmount: number): number {
+    return koboAmount / 100
+  }
+
   // Generate payment reference
   generateReference(): string {
     const timestamp = Date.now()

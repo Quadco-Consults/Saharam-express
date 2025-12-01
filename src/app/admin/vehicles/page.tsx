@@ -7,12 +7,14 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Switch } from '@/components/ui/switch'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { toast } from 'sonner'
 
 interface Vehicle {
   id: string
   plate_number: string
   model: string
+  vehicle_type: string
   capacity: number
   year: number
   color?: string
@@ -26,6 +28,7 @@ interface Vehicle {
 interface VehicleFormData {
   plate_number: string
   model: string
+  vehicle_type: string
   capacity: string
   year: string
   color: string
@@ -36,6 +39,7 @@ interface VehicleFormData {
 const initialFormData: VehicleFormData = {
   plate_number: '',
   model: '',
+  vehicle_type: 'HIACE',
   capacity: '',
   year: '',
   color: '',
@@ -86,6 +90,7 @@ export default function AdminVehiclesPage() {
       setFormData({
         plate_number: vehicle.plate_number,
         model: vehicle.model,
+        vehicle_type: vehicle.vehicle_type,
         capacity: vehicle.capacity.toString(),
         year: vehicle.year.toString(),
         color: vehicle.color || '',
@@ -378,6 +383,13 @@ export default function AdminVehiclesPage() {
                   <p className="font-medium text-gray-900">{vehicle.model}</p>
                 </div>
 
+                <div>
+                  <p className="text-sm text-gray-600">Type</p>
+                  <p className="font-medium text-gray-900">
+                    {vehicle.vehicle_type?.replace('_', ' ').replace('SALON_CAR', 'Salon Car') || 'Hiace'}
+                  </p>
+                </div>
+
                 <div className="flex items-center gap-4">
                   <div>
                     <p className="text-sm text-gray-600">Year</p>
@@ -476,6 +488,24 @@ export default function AdminVehiclesPage() {
 
             <div className="grid grid-cols-3 gap-4">
               <div>
+                <Label htmlFor="vehicle_type">Vehicle Type *</Label>
+                <Select
+                  value={formData.vehicle_type}
+                  onValueChange={(value) => handleInputChange('vehicle_type', value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select vehicle type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="SIENNA">Sienna</SelectItem>
+                    <SelectItem value="BUS">Bus</SelectItem>
+                    <SelectItem value="SALON_CAR">Salon Car</SelectItem>
+                    <SelectItem value="HIACE">Hiace</SelectItem>
+                    <SelectItem value="COASTER">Coaster</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
                 <Label htmlFor="capacity">Capacity *</Label>
                 <Input
                   id="capacity"
@@ -498,6 +528,9 @@ export default function AdminVehiclesPage() {
                   placeholder="2020"
                 />
               </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="color">Color</Label>
                 <Input
