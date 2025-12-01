@@ -9,6 +9,9 @@ export default function OfflineIndicator() {
   const [showNotification, setShowNotification] = useState(false)
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return
+
     const handleOnline = () => {
       setIsOnline(true)
       setShowNotification(false)
@@ -52,8 +55,10 @@ export default function OfflineIndicator() {
     const apiStatusInterval = setInterval(checkAPIStatus, 30000)
 
     return () => {
-      window.removeEventListener('online', handleOnline)
-      window.removeEventListener('offline', handleOffline)
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('online', handleOnline)
+        window.removeEventListener('offline', handleOffline)
+      }
       clearInterval(apiStatusInterval)
     }
   }, [])

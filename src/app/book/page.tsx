@@ -20,7 +20,7 @@ import Header from '@/components/Header'
 import SeatMap from '@/components/SeatMap'
 import BankTransferPayment from '@/components/BankTransferPayment'
 import ErrorBoundary from '@/components/ErrorBoundary'
-import OfflineIndicator from '@/components/OfflineIndicator'
+import ClientOnlyOfflineIndicator from '@/components/ClientOnlyOfflineIndicator'
 import { useAuth } from '@/hooks/useAuth'
 import { Trip } from '@/types'
 import { formatDateTime, formatCurrency, formatSeatNumbers } from '@/utils/formatters'
@@ -216,7 +216,7 @@ function BookContent() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <OfflineIndicator />
+        <ClientOnlyOfflineIndicator />
         <Header />
         <div className="container mx-auto px-6 py-12">
           <div className="max-w-4xl mx-auto">
@@ -268,7 +268,7 @@ function BookContent() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <OfflineIndicator />
+      <ClientOnlyOfflineIndicator />
       <Header />
 
       <div className="container mx-auto px-6 py-8">

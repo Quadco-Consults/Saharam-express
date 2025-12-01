@@ -8,7 +8,7 @@ import { useAuth } from '@/hooks/useAuth'
 import AuthModal from '@/components/AuthModal'
 import BookingOptionsModal from '@/components/BookingOptionsModal'
 import ErrorBoundary from '@/components/ErrorBoundary'
-import OfflineIndicator from '@/components/OfflineIndicator'
+import ClientOnlyOfflineIndicator from '@/components/ClientOnlyOfflineIndicator'
 import { Trip } from '@/types'
 import { formatDate } from '@/utils/formatters'
 import { apiClient } from '@/lib/api-client'
@@ -117,7 +117,7 @@ function SearchContent() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <OfflineIndicator />
+      <ClientOnlyOfflineIndicator />
       <Header />
 
       <div className="container mx-auto px-6 py-8">
