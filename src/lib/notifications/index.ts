@@ -7,7 +7,7 @@ import {
   sendBookingConfirmationEmail,
   sendPaymentReceiptEmail
 } from './email'
-import { createServerClient } from '@/lib/supabase-server'
+// import { createServerClient } from '@/lib/supabase-server' // Disabled for Prisma-only setup
 
 export interface NotificationResult {
   sms: { success: boolean; error?: string }
@@ -23,17 +23,8 @@ async function logNotification(
   success: boolean
 ) {
   try {
-    const supabase = await createServerClient()
-    await supabase
-      .from('notifications')
-      .insert({
-        user_id: userId,
-        type,
-        title,
-        message: success ? message : `Failed: ${message}`,
-        is_read: false,
-        sent_at: success ? new Date().toISOString() : null
-      })
+    // TODO: Implement notification logging with Prisma when notifications table is added
+    console.log(`Notification log for user ${userId}: [${type}] ${title} - ${success ? 'Success' : 'Failed'}`)
   } catch (error) {
     console.error('Failed to log notification:', error)
   }
@@ -201,21 +192,9 @@ export async function sendTripUpdate(
 // Get user notifications from database
 export async function getUserNotifications(userId: string, limit = 20) {
   try {
-    const supabase = await createServerClient()
-
-    const { data: notifications, error } = await supabase
-      .from('notifications')
-      .select('*')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false })
-      .limit(limit)
-
-    if (error) {
-      console.error('Error fetching notifications:', error)
-      return []
-    }
-
-    return notifications || []
+    // TODO: Implement with Prisma when notifications table is added
+    console.log(`Fetching notifications for user ${userId} (limit: ${limit})`)
+    return []
   } catch (error) {
     console.error('Error fetching notifications:', error)
     return []
@@ -225,19 +204,8 @@ export async function getUserNotifications(userId: string, limit = 20) {
 // Mark notification as read
 export async function markNotificationAsRead(notificationId: string, userId: string) {
   try {
-    const supabase = await createServerClient()
-
-    const { error } = await supabase
-      .from('notifications')
-      .update({ is_read: true })
-      .eq('id', notificationId)
-      .eq('user_id', userId)
-
-    if (error) {
-      console.error('Error marking notification as read:', error)
-      return false
-    }
-
+    // TODO: Implement with Prisma when notifications table is added
+    console.log(`Marking notification ${notificationId} as read for user ${userId}`)
     return true
   } catch (error) {
     console.error('Error marking notification as read:', error)
