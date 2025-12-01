@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const supabase = createServerClient()
+    const supabase = await createServerClient()
 
     // Find the payment record
     const { data: payment, error: paymentError } = await supabase

@@ -5,14 +5,15 @@ import { sendBookingConfirmation, sendPaymentConfirmation } from '@/lib/notifica
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const body = await request.json()
     const { paymentReference, gateway } = body
 
-    const supabase = createServerClient()
-    const bookingId = params.id
+    const supabase = await createServerClient()
+    const resolvedParams = await params
+    const bookingId = resolvedParams.id
 
     // Get the current session
     const { data: { session }, error: authError } = await supabase.auth.getSession()
@@ -70,7 +71,7 @@ export async function POST(
     }
 
     // Generate QR code data and image
-    const qrData = generateQRData(booking)
+    const qrData = generateQRData(booking as any)
     const qrCodeImage = await generateQRCode(qrData)
 
     // Update booking with payment status and QR code

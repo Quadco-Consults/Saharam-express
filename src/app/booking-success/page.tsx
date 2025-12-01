@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { CheckCircle, Download, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
-import DigitalTicket from '@/components/DigitalTicket'
 
 export default function BookingSuccessPage() {
   const [booking, setBooking] = useState<any>(null)
@@ -58,7 +57,7 @@ export default function BookingSuccessPage() {
 
       if (response.ok) {
         const result = await response.json()
-        setBooking(prev => ({
+        setBooking((prev: any) => ({
           ...prev,
           qr_code: result.data.qr_code
         }))
@@ -195,7 +194,19 @@ export default function BookingSuccessPage() {
           {/* Digital Ticket */}
           <div>
             {booking.qr_code ? (
-              <DigitalTicket booking={booking} />
+              <div className="bg-white rounded-xl border border-gray-200 p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Digital Ticket</h3>
+                <div className="text-center">
+                  <img
+                    src={booking.qr_code}
+                    alt="QR Code"
+                    className="mx-auto mb-4 w-32 h-32"
+                  />
+                  <p className="text-sm text-gray-600">
+                    Show this QR code to the driver for verification
+                  </p>
+                </div>
+              </div>
             ) : (
               <div className="bg-white rounded-xl border border-gray-200 p-6 text-center">
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">

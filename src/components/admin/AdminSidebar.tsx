@@ -14,8 +14,7 @@ import {
   X,
   Route,
   BarChart3,
-  MessageSquare,
-  QrCode
+  MessageSquare
 } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { cn } from '@/utils/cn'
@@ -27,7 +26,6 @@ const navigation = [
   { name: 'Vehicles', href: '/admin/vehicles', icon: Car },
   { name: 'Drivers', href: '/admin/drivers', icon: Users },
   { name: 'Bookings', href: '/admin/bookings', icon: CreditCard },
-  { name: 'Verify Tickets', href: '/admin/verify-tickets', icon: QrCode },
   { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
   { name: 'Messages', href: '/admin/messages', icon: MessageSquare },
   { name: 'Settings', href: '/admin/settings', icon: Settings },

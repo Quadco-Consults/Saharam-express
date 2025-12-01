@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@/lib/supabase-server'
+import { createServerClient, createServiceClient } from '@/lib/supabase-server'
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,13 +22,24 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const supabase = createServerClient()
+    const supabase = await createServerClient()
+
+    // Get current user
+    const { data: { session }, error: authError } = await supabase.auth.getSession()
+
+    if (authError || !session?.user) {
+      return NextResponse.json(
+        { success: false, error: 'Authentication required' },
+        { status: 401 }
+      )
+    }
 
     // Verify booking exists and belongs to user
     const { data: booking, error: bookingError } = await supabase
       .from('bookings')
       .select('*')
       .eq('id', bookingId)
+      .eq('user_id', session.user.id)
       .single()
 
     if (bookingError || !booking) {
@@ -69,8 +80,9 @@ export async function POST(request: NextRequest) {
       reference: reference
     }
 
-    // Create payment record
-    const { data: payment, error: paymentError } = await supabase
+    // Create payment record using service client to bypass RLS
+    const serviceSupabase = createServiceClient()
+    const { data: payment, error: paymentError } = await serviceSupabase
       .from('payments')
       .insert({
         booking_id: bookingId,
@@ -97,7 +109,7 @@ export async function POST(request: NextRequest) {
       success: true,
       data: {
         reference,
-        authorizationUrl: paymentResult.authorization_url || paymentResult.cashierUrl,
+        authorizationUrl: paymentResult.authorization_url || (paymentResult as any).cashierUrl,
         accessCode: paymentResult.access_code,
         gateway,
         payment

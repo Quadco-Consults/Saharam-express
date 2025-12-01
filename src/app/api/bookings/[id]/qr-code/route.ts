@@ -4,10 +4,10 @@ import { generateQRData, generateQRCode } from '@/lib/qr-code'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const supabase = createServerClient()
+    const supabase = await createServerClient()
 
     // Get the current session
     const { data: { session }, error: authError } = await supabase.auth.getSession()
@@ -19,7 +19,8 @@ export async function POST(
       )
     }
 
-    const bookingId = params.id
+    const resolvedParams = await params
+    const bookingId = resolvedParams.id
 
     // Fetch the booking with trip details
     const { data: booking, error: bookingError } = await supabase
@@ -70,7 +71,7 @@ export async function POST(
     }
 
     // Generate QR code data
-    const qrData = generateQRData(booking)
+    const qrData = generateQRData(booking as any)
 
     // Generate QR code image
     const qrCodeImage = await generateQRCode(qrData)

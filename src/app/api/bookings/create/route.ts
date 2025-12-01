@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@/lib/supabase-server'
+import { createServerClient, createServiceClient } from '@/lib/supabase-server'
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,16 +28,54 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const supabase = createServerClient()
+    const supabase = await createServerClient()
 
-    // Get current user
+    // Get current user (optional for guest bookings)
     const { data: { session }, error: authError } = await supabase.auth.getSession()
 
-    if (authError || !session?.user) {
-      return NextResponse.json(
-        { success: false, error: 'Authentication required' },
-        { status: 401 }
-      )
+    // For guest bookings, we won't have a session
+    const isGuestBooking = !session?.user
+    let userId = null
+
+    if (session?.user) {
+      userId = session.user.id
+    } else {
+      // For guest bookings, create or find a special guest user using service client
+      const serviceSupabase = createServiceClient()
+
+      const { data: guestUser, error: guestError } = await serviceSupabase
+        .from('users')
+        .select('id')
+        .eq('email', 'guest@saharam.system')
+        .single()
+
+      if (guestUser) {
+        userId = guestUser.id
+      } else {
+        // Create a system guest user if it doesn't exist
+        const { data: newGuestUser, error: createGuestError } = await serviceSupabase
+          .from('users')
+          .insert({
+            email: 'guest@saharam.system',
+            phone: '+000000000',
+            first_name: 'Guest',
+            last_name: 'User',
+            role: 'customer',
+            is_verified: true
+          })
+          .select('id')
+          .single()
+
+        if (newGuestUser) {
+          userId = newGuestUser.id
+        } else {
+          console.error('Failed to create guest user:', createGuestError)
+          return NextResponse.json(
+            { success: false, error: 'Failed to process guest booking' },
+            { status: 500 }
+          )
+        }
+      }
     }
 
     // Start a transaction to ensure data consistency
@@ -102,7 +140,7 @@ export async function POST(request: NextRequest) {
     const { data: booking, error: bookingError } = await supabase
       .from('bookings')
       .insert({
-        user_id: session.user.id,
+        user_id: userId,
         trip_id: tripId,
         passenger_name: passengerName,
         passenger_phone: passengerPhone,

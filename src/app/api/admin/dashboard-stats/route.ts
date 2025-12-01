@@ -3,7 +3,7 @@ import { createServerClient } from '@/lib/supabase-server'
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createServerClient()
+    const supabase = await createServerClient()
 
     // Verify admin user
     const { data: { session }, error: authError } = await supabase.auth.getSession()

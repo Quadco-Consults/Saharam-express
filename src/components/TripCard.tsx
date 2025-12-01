@@ -58,7 +58,7 @@ export default function TripCard({ trip, onSelect, isSelected = false }: TripCar
 
         <div className="text-right">
           <p className="text-2xl font-bold text-saharam-600">
-            {formatCurrency(trip.basePrice || trip.base_price || 4500)}
+            {formatCurrency((trip as any).basePrice || (trip as any).base_price || 4500)}
           </p>
           <p className="text-sm text-gray-600">per seat</p>
         </div>

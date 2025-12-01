@@ -30,13 +30,20 @@ const bookingSchema = z.object({
 
 type BookingFormData = z.infer<typeof bookingSchema>
 
-interface TripDetails extends Trip {
+interface TripDetails {
+  id: string
   route: {
     from_city: string
     to_city: string
     distance: number
     estimated_duration: number
   }
+  departure_time: string
+  arrival_time: string
+  base_price: number
+  total_seats: number
+  available_seats: number
+  bookedSeats: string[]
   vehicle: {
     plate_number: string
     model: string
@@ -46,7 +53,6 @@ interface TripDetails extends Trip {
     first_name: string
     last_name: string
   } | null
-  bookedSeats: string[]
 }
 
 export default function BookPage() {
@@ -147,7 +153,7 @@ export default function BookPage() {
           passengerPhone: bookingData.passengerPhone,
           passengerEmail: bookingData.passengerEmail,
           selectedSeats,
-          totalAmount: tripDetails.basePrice * selectedSeats.length
+          totalAmount: tripDetails.base_price * selectedSeats.length
         })
       })
 
@@ -164,7 +170,7 @@ export default function BookPage() {
         body: JSON.stringify({
           gateway: 'paystack', // Default to Paystack
           bookingId: bookingResult.data.booking.id,
-          amount: tripDetails.basePrice * selectedSeats.length,
+          amount: tripDetails.base_price * selectedSeats.length,
           email: bookingData.passengerEmail,
           customerName: bookingData.passengerName,
           customerPhone: bookingData.passengerPhone,
@@ -189,7 +195,7 @@ export default function BookPage() {
     }
   }
 
-  const totalAmount = tripDetails ? tripDetails.basePrice * selectedSeats.length : 0
+  const totalAmount = tripDetails ? tripDetails.base_price * selectedSeats.length : 0
 
   if (loading) {
     return (
@@ -298,7 +304,7 @@ export default function BookPage() {
             <div className="lg:col-span-2">
               {step === 'seats' && (
                 <SeatMap
-                  totalSeats={tripDetails.totalSeats}
+                  totalSeats={tripDetails.total_seats}
                   bookedSeats={tripDetails.bookedSeats}
                   selectedSeats={selectedSeats}
                   onSeatSelect={handleSeatSelect}
@@ -408,7 +414,7 @@ export default function BookPage() {
                     <Clock className="w-5 h-5 text-gray-400 mt-0.5" />
                     <div>
                       <p className="font-medium text-gray-900">
-                        {formatDateTime(tripDetails.departureTime)}
+                        {formatDateTime(tripDetails.departure_time)}
                       </p>
                       <p className="text-sm text-gray-600">Departure</p>
                     </div>
@@ -433,7 +439,7 @@ export default function BookPage() {
                 <div className="border-t border-gray-200 pt-4 space-y-2">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Price per seat</span>
-                    <span className="font-medium">{formatCurrency(tripDetails.basePrice)}</span>
+                    <span className="font-medium">{formatCurrency(tripDetails.base_price)}</span>
                   </div>
                   {selectedSeats.length > 0 && (
                     <div className="flex justify-between">

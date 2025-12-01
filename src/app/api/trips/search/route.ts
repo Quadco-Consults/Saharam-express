@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const supabase = createServerClient()
+    const supabase = await createServerClient()
 
     // Parse date and set time range for the day
     const searchDate = new Date(date)

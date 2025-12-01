@@ -23,7 +23,7 @@ async function logNotification(
   success: boolean
 ) {
   try {
-    const supabase = createServerClient()
+    const supabase = await createServerClient()
     await supabase
       .from('notifications')
       .insert({
@@ -201,7 +201,7 @@ export async function sendTripUpdate(
 // Get user notifications from database
 export async function getUserNotifications(userId: string, limit = 20) {
   try {
-    const supabase = createServerClient()
+    const supabase = await createServerClient()
 
     const { data: notifications, error } = await supabase
       .from('notifications')
@@ -225,7 +225,7 @@ export async function getUserNotifications(userId: string, limit = 20) {
 // Mark notification as read
 export async function markNotificationAsRead(notificationId: string, userId: string) {
   try {
-    const supabase = createServerClient()
+    const supabase = await createServerClient()
 
     const { error } = await supabase
       .from('notifications')

@@ -65,8 +65,6 @@ export async function generateQRCode(data: TicketQRData): Promise<string> {
     const qrString = JSON.stringify(data)
 
     const qrCode = await QRCode.toDataURL(qrString, {
-      type: 'image/png',
-      quality: 0.92,
       margin: 1,
       color: {
         dark: '#000000',
