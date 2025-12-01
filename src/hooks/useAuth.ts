@@ -15,6 +15,11 @@ export function useAuth() {
 
   useEffect(() => {
     // Check for stored auth token on mount
+    if (typeof window === 'undefined') {
+      setLoading(false)
+      return
+    }
+
     const token = localStorage.getItem('auth_token')
     if (token) {
       // Verify token and get user data
@@ -28,11 +33,15 @@ export function useAuth() {
           if (data.user) {
             setUser(data.user)
           } else {
+            if (typeof window !== 'undefined') {
             localStorage.removeItem('auth_token')
+          }
           }
         })
         .catch(() => {
-          localStorage.removeItem('auth_token')
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('auth_token')
+          }
         })
         .finally(() => {
           setLoading(false)
@@ -68,7 +77,9 @@ export function useAuth() {
       }
 
       if (data.token) {
-        localStorage.setItem('auth_token', data.token)
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('auth_token', data.token)
+        }
         setUser(data.user)
       }
 
@@ -95,7 +106,9 @@ export function useAuth() {
       }
 
       if (data.token) {
-        localStorage.setItem('auth_token', data.token)
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('auth_token', data.token)
+        }
         setUser(data.user)
       }
 
@@ -106,7 +119,9 @@ export function useAuth() {
   }
 
   const signOut = async () => {
-    localStorage.removeItem('auth_token')
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('auth_token')
+    }
     setUser(null)
   }
 
@@ -116,7 +131,7 @@ export function useAuth() {
     phone?: string
   }) => {
     try {
-      const token = localStorage.getItem('auth_token')
+      const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
       const response = await fetch('/api/auth/profile', {
         method: 'PUT',
         headers: {
