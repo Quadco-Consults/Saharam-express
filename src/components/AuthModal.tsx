@@ -11,6 +11,7 @@ interface AuthModalProps {
   isOpen: boolean
   onClose: () => void
   mode?: 'signin' | 'signup'
+  onSuccess?: () => void
 }
 
 const signinSchema = z.object({
@@ -35,7 +36,7 @@ const signupSchema = z.object({
 type SigninFormData = z.infer<typeof signinSchema>
 type SignupFormData = z.infer<typeof signupSchema>
 
-export default function AuthModal({ isOpen, onClose, mode = 'signin' }: AuthModalProps) {
+export default function AuthModal({ isOpen, onClose, mode = 'signin', onSuccess }: AuthModalProps) {
   const [currentMode, setCurrentMode] = useState<'signin' | 'signup' | 'forgot'>(mode)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -69,12 +70,17 @@ export default function AuthModal({ isOpen, onClose, mode = 'signin' }: AuthModa
       setIsSubmitting(false)
     } else {
       setMessage({ type: 'success', text: 'Successfully signed in!' })
-      // Close modal immediately on successful login
-      setTimeout(() => {
-        onClose()
-        // Force page refresh to ensure auth state is properly loaded
-        window.location.reload()
-      }, 1000)
+      // Call onSuccess callback if provided
+      if (onSuccess) {
+        onSuccess()
+      } else {
+        // Close modal immediately on successful login
+        setTimeout(() => {
+          onClose()
+          // Force page refresh to ensure auth state is properly loaded
+          window.location.reload()
+        }, 1000)
+      }
     }
   }
 

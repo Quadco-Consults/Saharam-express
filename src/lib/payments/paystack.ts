@@ -149,6 +149,21 @@ class PaystackService {
     return koboAmount / 100
   }
 
+  // Validate webhook signature
+  validateWebhookSignature(payload: any, signature: string): boolean {
+    try {
+      const crypto = require('crypto')
+      const expectedSignature = crypto
+        .createHmac('sha512', this.config.secretKey)
+        .update(JSON.stringify(payload))
+        .digest('hex')
+      return expectedSignature === signature
+    } catch (error) {
+      console.error('Error validating Paystack webhook signature:', error)
+      return false
+    }
+  }
+
   // Generate payment reference
   generateReference(): string {
     const timestamp = Date.now()

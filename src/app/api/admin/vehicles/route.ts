@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
       vehicle_type: vehicle.vehicleType,
       capacity: vehicle.capacity,
       year: vehicle.year,
-      color: vehicle.color || '',
+      color: '',
       is_active: vehicle.status === 'ACTIVE',
       last_maintenance: vehicle.lastMaintenance?.toISOString() || null,
       next_maintenance: null, // Not in current schema

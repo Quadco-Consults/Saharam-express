@@ -173,6 +173,18 @@ class OPayService {
   formatAmount(amount: number): string {
     return (amount * 100).toString()
   }
+
+  // Validate webhook signature
+  validateWebhookSignature(payload: any, signature: string): boolean {
+    try {
+      const timestamp = payload.timestamp || Date.now().toString()
+      const expectedSignature = this.generateSignature(payload, timestamp)
+      return expectedSignature === signature
+    } catch (error) {
+      console.error('Error validating OPay webhook signature:', error)
+      return false
+    }
+  }
 }
 
 // Export singleton instance

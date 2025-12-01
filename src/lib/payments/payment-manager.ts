@@ -325,7 +325,7 @@ export class PaymentManager {
       }
 
       // Check if receipt is uploaded and approved
-      const hasApprovedReceipt = booking.paymentReceipt?.status === 'approved'
+      const hasApprovedReceipt = booking.paymentReceipt?.status === 'APPROVED'
 
       return {
         success: hasApprovedReceipt,

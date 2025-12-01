@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
 
     // Check if email already exists (if provided)
     if (body.email) {
-      const existingDriver = await prisma.driver.findUnique({
+      const existingDriver = await prisma.driver.findFirst({
         where: { email: body.email }
       })
 
@@ -159,7 +159,7 @@ export async function PUT(request: NextRequest) {
 
     // Check email uniqueness if being updated
     if (body.email && body.email !== existingDriver.email) {
-      const emailExists = await prisma.driver.findUnique({
+      const emailExists = await prisma.driver.findFirst({
         where: { email: body.email }
       })
 

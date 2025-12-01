@@ -51,6 +51,7 @@ interface Route {
   to_city: string
   distance: number
   estimated_duration: number
+  is_active: boolean
 }
 
 interface Vehicle {
