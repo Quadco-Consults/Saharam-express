@@ -7,7 +7,6 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
-import { createBrowserClientHelper } from '@/lib/supabase'
 import { toast } from 'sonner'
 
 interface LoyaltyTransaction {
@@ -42,17 +41,15 @@ export default function LoyaltyPage() {
   const [redeemPoints, setRedeemPoints] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
-  const supabase = createBrowserClientHelper()
-
   useEffect(() => {
     checkUserAndLoadData()
   }, [])
 
   const checkUserAndLoadData = async () => {
     try {
-      const { data: { session }, error } = await supabase.auth.getSession()
-
-      if (error || !session) {
+      // Check if user is authenticated
+      const token = localStorage.getItem('auth_token')
+      if (!token) {
         router.push('/auth/login')
         return
       }

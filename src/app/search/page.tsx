@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { ArrowLeft, Search, Calendar, MapPin, Users } from 'lucide-react'
 import Header from '@/components/Header'
@@ -8,6 +8,8 @@ import { useAuth } from '@/hooks/useAuth'
 import AuthModal from '@/components/AuthModal'
 import { Trip } from '@/types'
 import { formatDate } from '@/utils/formatters'
+
+export const dynamic = 'force-dynamic'
 
 interface SearchResults {
   trips: (Trip & {
@@ -36,7 +38,7 @@ interface SearchResults {
   }
 }
 
-export default function SearchPage() {
+function SearchContent() {
   const [searchResults, setSearchResults] = useState<SearchResults | null>(null)
   const [loading, setLoading] = useState(false)
   const [selectedTrip, setSelectedTrip] = useState<any>(null)
@@ -249,5 +251,17 @@ export default function SearchPage() {
         mode="signin"
       />
     </div>
+  )
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-saharam-500"></div>
+      </div>
+    }>
+      <SearchContent />
+    </Suspense>
   )
 }

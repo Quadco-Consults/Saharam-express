@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { createBrowserClientHelper } from '@/lib/supabase'
 import { toast } from 'sonner'
 
 interface UserProfile {
@@ -19,7 +18,6 @@ interface UserProfile {
 
 export default function SettingsPage() {
   const router = useRouter()
-  const supabase = createBrowserClientHelper()
   const [user, setUser] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const [darkMode, setDarkMode] = useState(false)
@@ -33,27 +31,28 @@ export default function SettingsPage() {
 
   const checkUser = async () => {
     try {
-      const { data: { session }, error } = await supabase.auth.getSession()
+      const token = localStorage.getItem('auth_token')
 
-      if (error || !session) {
+      if (!token) {
         router.push('/auth/login')
         return
       }
 
-      // Get user profile
-      const { data: profile, error: profileError } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', session.user.id)
-        .single()
+      // Get user profile via API
+      const response = await fetch('/api/auth/profile', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
 
-      if (profileError) {
-        console.error('Error fetching profile:', profileError)
-        toast.error('Failed to load user profile')
+      const data = await response.json()
+
+      if (data.error) {
+        router.push('/auth/login')
         return
       }
 
-      setUser(profile)
+      setUser(data.user)
     } catch (error) {
       console.error('Error:', error)
       toast.error('An error occurred')
@@ -64,7 +63,7 @@ export default function SettingsPage() {
 
   const handleSignOut = async () => {
     try {
-      await supabase.auth.signOut()
+      localStorage.removeItem('auth_token')
       router.push('/')
       toast.success('Signed out successfully')
     } catch (error) {

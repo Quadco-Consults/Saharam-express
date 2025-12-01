@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import { Calendar, MapPin, Users, CreditCard, Clock, AlertCircle, CheckCircle } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import Header from '@/components/Header'
-import { createBrowserClientHelper } from '@/lib/supabase'
 import { formatDateTime, formatCurrency, formatSeatNumbers } from '@/utils/formatters'
 import { cn } from '@/utils/cn'
 
@@ -38,7 +37,6 @@ export default function BookingsPage() {
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'completed' | 'cancelled'>('all')
 
   const { user } = useAuth()
-  const supabase = createBrowserClientHelper()
 
   useEffect(() => {
     if (user) {
@@ -50,24 +48,19 @@ export default function BookingsPage() {
     if (!user) return
 
     try {
-      const { data, error } = await supabase
-        .from('bookings')
-        .select(`
-          *,
-          trip:trips(
-            departure_time,
-            arrival_time,
-            route:routes(from_city, to_city),
-            vehicle:vehicles(plate_number, model)
-          )
-        `)
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
+      const token = localStorage.getItem('auth_token')
+      const response = await fetch('/api/bookings', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
 
-      if (error) {
-        console.error('Error fetching bookings:', error)
+      const result = await response.json()
+
+      if (result.success) {
+        setBookings(result.data || [])
       } else {
-        setBookings(data || [])
+        console.error('Error fetching bookings:', result.error)
       }
     } catch (error) {
       console.error('Error fetching bookings:', error)

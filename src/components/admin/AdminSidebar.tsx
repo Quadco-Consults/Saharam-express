@@ -105,12 +105,12 @@ export default function AdminSidebar() {
           <div className="flex items-center gap-3 mb-3">
             <div className="w-8 h-8 bg-saharam-500 rounded-full flex items-center justify-center">
               <span className="text-white text-sm font-medium">
-                {user?.profile?.firstName?.[0] || user?.email?.[0]?.toUpperCase()}
+                {user?.firstName?.[0] || user?.email?.[0]?.toUpperCase()}
               </span>
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-gray-900 truncate">
-                {user?.profile?.firstName} {user?.profile?.lastName}
+                {user?.firstName} {user?.lastName}
               </p>
               <p className="text-xs text-gray-500 truncate">Administrator</p>
             </div>

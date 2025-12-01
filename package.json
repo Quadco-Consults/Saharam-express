@@ -20,8 +20,6 @@
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
     "@prisma/client": "^5.19.1",
-    "@supabase/ssr": "^0.5.2",
-    "@supabase/supabase-js": "^2.45.4",
     "@types/bcryptjs": "^3.0.0",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/nodemailer": "^7.0.4",

@@ -73,15 +73,15 @@ export default function Header() {
                   >
                     <div className="w-8 h-8 bg-saharam-500 rounded-full flex items-center justify-center">
                       <span className="text-white text-sm font-medium">
-                        {user.profile?.firstName?.[0] || user.email?.[0]?.toUpperCase()}
+                        {user.firstName?.[0] || user.email?.[0]?.toUpperCase()}
                       </span>
                     </div>
                     <div className="text-left">
                       <p className="text-sm font-medium text-gray-900">
-                        {user.profile?.firstName || 'User'}
+                        {user.firstName || 'User'}
                       </p>
                       <p className="text-xs text-gray-500 capitalize">
-                        {user.profile?.role || 'Customer'}
+                        {user.role || 'Customer'}
                       </p>
                     </div>
                   </button>
@@ -198,15 +198,15 @@ export default function Header() {
                   <div className="flex items-center gap-3 px-4 py-2 mb-3">
                     <div className="w-10 h-10 bg-saharam-500 rounded-full flex items-center justify-center">
                       <span className="text-white font-medium">
-                        {user.profile?.firstName?.[0] || user.email?.[0]?.toUpperCase()}
+                        {user.firstName?.[0] || user.email?.[0]?.toUpperCase()}
                       </span>
                     </div>
                     <div>
                       <p className="font-medium text-gray-900">
-                        {user.profile?.firstName || 'User'}
+                        {user.firstName || 'User'}
                       </p>
                       <p className="text-sm text-gray-500 capitalize">
-                        {user.profile?.role || 'Customer'}
+                        {user.role || 'Customer'}
                       </p>
                     </div>
                   </div>

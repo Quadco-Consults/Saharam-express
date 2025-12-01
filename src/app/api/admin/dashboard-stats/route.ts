@@ -1,30 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@/lib/supabase-server'
+import { requireAdmin } from '@/lib/auth-helpers'
+import { prisma } from '@/lib/prisma'
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await createServerClient()
-
     // Verify admin user
-    const { data: { session }, error: authError } = await supabase.auth.getSession()
+    const admin = await requireAdmin(request)
 
-    if (authError || !session?.user) {
+    if (!admin) {
       return NextResponse.json(
-        { success: false, error: 'Authentication required' },
+        { success: false, error: 'Admin authentication required' },
         { status: 401 }
-      )
-    }
-
-    const { data: user, error: userError } = await supabase
-      .from('users')
-      .select('role')
-      .eq('id', session.user.id)
-      .single()
-
-    if (userError || user?.role !== 'admin') {
-      return NextResponse.json(
-        { success: false, error: 'Admin access required' },
-        { status: 403 }
       )
     }
 
@@ -35,124 +21,157 @@ export async function GET(request: NextRequest) {
     tomorrow.setDate(tomorrow.getDate() + 1)
 
     const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1)
-    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1)
-    const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1)
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
 
     // Run all queries in parallel
     const [
-      totalTripsResult,
-      totalBookingsResult,
-      totalRevenueResult,
-      activeUsersResult,
-      todayTripsResult,
-      todayBookingsResult,
-      monthlyRevenueResult,
-      recentBookingsResult,
-      upcomingTripsResult
+      totalTrips,
+      totalBookings,
+      totalRevenueData,
+      activeUsersData,
+      todayTrips,
+      todayBookings,
+      monthlyRevenueData,
+      recentBookings,
+      upcomingTrips,
+      occupancyData
     ] = await Promise.all([
       // Total trips
-      supabase
-        .from('trips')
-        .select('id', { count: 'exact' }),
+      prisma.trip.count(),
 
       // Total bookings
-      supabase
-        .from('bookings')
-        .select('id', { count: 'exact' })
-        .eq('payment_status', 'paid'),
+      prisma.booking.count({
+        where: { paymentStatus: 'COMPLETED' }
+      }),
 
       // Total revenue
-      supabase
-        .from('bookings')
-        .select('total_amount')
-        .eq('payment_status', 'paid'),
+      prisma.booking.aggregate({
+        where: { paymentStatus: 'COMPLETED' },
+        _sum: { totalAmount: true }
+      }),
 
       // Active users (users with bookings in last 30 days)
-      supabase
-        .from('bookings')
-        .select('user_id')
-        .eq('payment_status', 'paid')
-        .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()),
+      prisma.booking.findMany({
+        where: {
+          paymentStatus: 'COMPLETED',
+          createdAt: { gte: thirtyDaysAgo }
+        },
+        select: { userId: true },
+        distinct: ['userId']
+      }),
 
       // Today's trips
-      supabase
-        .from('trips')
-        .select('id', { count: 'exact' })
-        .gte('departure_time', today.toISOString())
-        .lt('departure_time', tomorrow.toISOString()),
+      prisma.trip.count({
+        where: {
+          departureTime: {
+            gte: today,
+            lt: tomorrow
+          }
+        }
+      }),
 
       // Today's bookings
-      supabase
-        .from('bookings')
-        .select('id', { count: 'exact' })
-        .eq('payment_status', 'paid')
-        .gte('created_at', today.toISOString()),
+      prisma.booking.count({
+        where: {
+          paymentStatus: 'COMPLETED',
+          createdAt: { gte: today }
+        }
+      }),
 
       // This month revenue
-      supabase
-        .from('bookings')
-        .select('total_amount')
-        .eq('payment_status', 'paid')
-        .gte('created_at', thisMonth.toISOString()),
+      prisma.booking.aggregate({
+        where: {
+          paymentStatus: 'COMPLETED',
+          createdAt: { gte: thisMonth }
+        },
+        _sum: { totalAmount: true }
+      }),
 
       // Recent bookings
-      supabase
-        .from('bookings')
-        .select(`
-          id,
-          booking_reference,
-          passenger_name,
-          total_amount,
-          created_at,
-          trip:trips(
-            departure_time,
-            route:routes(from_city, to_city)
-          )
-        `)
-        .eq('payment_status', 'paid')
-        .order('created_at', { ascending: false })
-        .limit(5),
+      prisma.booking.findMany({
+        where: { paymentStatus: 'COMPLETED' },
+        include: {
+          trip: {
+            include: {
+              route: {
+                select: { fromCity: true, toCity: true }
+              }
+            }
+          }
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 5
+      }),
 
       // Upcoming trips
-      supabase
-        .from('trips')
-        .select(`
-          id,
-          departure_time,
-          available_seats,
-          total_seats,
-          route:routes(from_city, to_city),
-          vehicle:vehicles(plate_number, model)
-        `)
-        .gte('departure_time', now.toISOString())
-        .order('departure_time', { ascending: true })
-        .limit(5)
+      prisma.trip.findMany({
+        where: {
+          departureTime: { gte: now }
+        },
+        include: {
+          route: {
+            select: { fromCity: true, toCity: true }
+          },
+          vehicle: {
+            select: { plateNumber: true, model: true }
+          }
+        },
+        orderBy: { departureTime: 'asc' },
+        take: 5
+      }),
+
+      // Occupancy data for this month
+      prisma.trip.findMany({
+        where: {
+          departureTime: { gte: thisMonth }
+        },
+        select: { totalSeats: true, availableSeats: true }
+      })
     ])
 
     // Process results
-    const totalTrips = totalTripsResult.count || 0
-    const totalBookings = totalBookingsResult.count || 0
-
-    const totalRevenue = totalRevenueResult.data?.reduce((sum, booking) => sum + booking.total_amount, 0) || 0
-
-    const activeUsers = new Set(activeUsersResult.data?.map(b => b.user_id)).size
-
-    const todayTrips = todayTripsResult.count || 0
-    const todayBookings = todayBookingsResult.count || 0
-
-    const monthlyRevenue = monthlyRevenueResult.data?.reduce((sum, booking) => sum + booking.total_amount, 0) || 0
+    const totalRevenue = Number(totalRevenueData._sum.totalAmount) || 0
+    const activeUsers = activeUsersData.length
+    const monthlyRevenue = Number(monthlyRevenueData._sum.totalAmount) || 0
 
     // Calculate occupancy rate
-    const occupancyData = await supabase
-      .from('trips')
-      .select('total_seats, available_seats')
-      .gte('departure_time', thisMonth.toISOString())
-
-    const totalSeatsThisMonth = occupancyData.data?.reduce((sum, trip) => sum + trip.total_seats, 0) || 0
-    const availableSeatsThisMonth = occupancyData.data?.reduce((sum, trip) => sum + trip.available_seats, 0) || 0
+    const totalSeatsThisMonth = occupancyData.reduce((sum, trip) => sum + trip.totalSeats, 0)
+    const availableSeatsThisMonth = occupancyData.reduce((sum, trip) => sum + trip.availableSeats, 0)
     const occupancyRate = totalSeatsThisMonth > 0
       ? ((totalSeatsThisMonth - availableSeatsThisMonth) / totalSeatsThisMonth) * 100
       : 0
+
+    // Format recent bookings
+    const formattedRecentBookings = recentBookings.map(booking => ({
+      id: booking.id,
+      bookingReference: booking.bookingReference,
+      passengerName: booking.passengerName,
+      totalAmount: Number(booking.totalAmount),
+      createdAt: booking.createdAt.toISOString(),
+      trip: {
+        departureTime: booking.trip.departureTime.toISOString(),
+        route: {
+          fromCity: booking.trip.route.fromCity,
+          toCity: booking.trip.route.toCity
+        }
+      }
+    }))
+
+    // Format upcoming trips
+    const formattedUpcomingTrips = upcomingTrips.map(trip => ({
+      id: trip.id,
+      departureTime: trip.departureTime.toISOString(),
+      availableSeats: trip.availableSeats,
+      totalSeats: trip.totalSeats,
+      route: {
+        fromCity: trip.route.fromCity,
+        toCity: trip.route.toCity
+      },
+      vehicle: {
+        plateNumber: trip.vehicle.plateNumber,
+        model: trip.vehicle.model
+      }
+    }))
 
     return NextResponse.json({
       success: true,
@@ -167,8 +186,8 @@ export async function GET(request: NextRequest) {
           monthlyRevenue,
           occupancyRate: Math.round(occupancyRate * 10) / 10
         },
-        recentBookings: recentBookingsResult.data || [],
-        upcomingTrips: upcomingTripsResult.data || []
+        recentBookings: formattedRecentBookings,
+        upcomingTrips: formattedUpcomingTrips
       }
     })
 

@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -21,6 +21,8 @@ import { useAuth } from '@/hooks/useAuth'
 import { Trip } from '@/types'
 import { formatDateTime, formatCurrency, formatSeatNumbers } from '@/utils/formatters'
 import { cn } from '@/utils/cn'
+
+export const dynamic = 'force-dynamic'
 
 const bookingSchema = z.object({
   passengerName: z.string().min(2, 'Passenger name must be at least 2 characters'),
@@ -55,7 +57,7 @@ interface TripDetails {
   } | null
 }
 
-export default function BookPage() {
+function BookContent() {
   const [tripDetails, setTripDetails] = useState<TripDetails | null>(null)
   const [selectedSeats, setSelectedSeats] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
@@ -72,9 +74,9 @@ export default function BookPage() {
   const { register, handleSubmit, formState: { errors }, setValue } = useForm<BookingFormData>({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
-      passengerName: user?.profile ? `${user.profile.firstName} ${user.profile.lastName}` : '',
+      passengerName: user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : '',
       passengerEmail: user?.email || '',
-      passengerPhone: user?.profile?.phone || '',
+      passengerPhone: '',
     }
   })
 
@@ -88,10 +90,10 @@ export default function BookPage() {
 
   useEffect(() => {
     // Set default values when user data is available
-    if (user?.profile) {
-      setValue('passengerName', `${user.profile.firstName} ${user.profile.lastName}`)
+    if (user) {
+      setValue('passengerName', `${user.firstName || ''} ${user.lastName || ''}`.trim())
       setValue('passengerEmail', user.email || '')
-      setValue('passengerPhone', user.profile.phone || '')
+      setValue('passengerPhone', '')
     }
   }, [user, setValue])
 
@@ -477,5 +479,17 @@ export default function BookPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function BookPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-saharam-500"></div>
+      </div>
+    }>
+      <BookContent />
+    </Suspense>
   )
 }

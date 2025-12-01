@@ -1,92 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@/lib/supabase-server'
-
-async function verifyAdminAuth(supabase: any) {
-  // Verify admin user
-  const { data: { session }, error: authError } = await supabase.auth.getSession()
-
-  if (authError || !session?.user) {
-    return { error: 'Authentication required', status: 401 }
-  }
-
-  const { data: user, error: userError } = await supabase
-    .from('users')
-    .select('role')
-    .eq('id', session.user.id)
-    .single()
-
-  if (userError || user?.role !== 'admin') {
-    return { error: 'Admin access required', status: 403 }
-  }
-
-  return { success: true }
-}
+import { requireAdmin } from '@/lib/auth-helpers'
+import { prisma } from '@/lib/prisma'
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await createServerClient()
-    const authResult = await verifyAdminAuth(supabase)
+    const admin = await requireAdmin(request)
 
-    if (authResult.error) {
+    if (!admin) {
       return NextResponse.json(
-        { success: false, error: authResult.error },
-        { status: authResult.status }
+        { success: false, error: 'Admin authentication required' },
+        { status: 401 }
       )
     }
 
-    // Get all drivers with additional stats
-    const { data: drivers, error: driversError } = await supabase
-      .from('users')
-      .select(`
-        id,
-        first_name,
-        last_name,
-        email,
-        phone,
-        date_of_birth,
-        is_verified,
-        created_at,
-        updated_at
-      `)
-      .eq('role', 'driver')
-      .order('first_name', { ascending: true })
+    // Get drivers with stats
+    const drivers = await prisma.driver.findMany()
 
-    if (driversError) {
-      console.error('Error fetching drivers:', driversError)
-      return NextResponse.json(
-        { success: false, error: 'Failed to fetch drivers' },
-        { status: 500 }
-      )
-    }
-
-    // Get trip statistics for each driver
-    const driversWithStats = await Promise.all(
-      (drivers || []).map(async (driver) => {
-        const { data: trips, error: tripsError } = await supabase
-          .from('trips')
-          .select('id, status, departure_date')
-          .eq('driver_id', driver.id)
-
-        let stats = {
-          totalTrips: 0,
-          completedTrips: 0,
-          activeTrips: 0,
-          upcomingTrips: 0
-        }
-
-        if (!tripsError && trips) {
-          stats.totalTrips = trips.length
-          stats.completedTrips = trips.filter(t => t.status === 'completed').length
-          stats.activeTrips = trips.filter(t => t.status === 'active').length
-          stats.upcomingTrips = trips.filter(t => t.status === 'scheduled').length
-        }
-
-        return {
-          ...driver,
-          stats
-        }
-      })
-    )
+    // For now, return drivers with placeholder stats
+    const driversWithStats = drivers.map(driver => ({
+      id: driver.id,
+      first_name: driver.firstName,
+      last_name: driver.lastName,
+      email: driver.email || '',
+      phone: driver.phone,
+      date_of_birth: driver.licenseExpiry.toISOString(),
+      is_verified: driver.status === 'ACTIVE',
+      created_at: driver.createdAt.toISOString(),
+      updated_at: driver.updatedAt.toISOString(),
+      stats: {
+        totalTrips: 0,
+        completedTrips: 0,
+        activeTrips: 0,
+        upcomingTrips: 0
+      }
+    }))
 
     return NextResponse.json({
       success: true,
@@ -96,7 +43,7 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Drivers fetch error:', error)
+    console.error('Drivers API error:', error)
     return NextResponse.json(
       { success: false, error: 'Internal server error' },
       { status: 500 }
@@ -106,83 +53,19 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createServerClient()
-    const authResult = await verifyAdminAuth(supabase)
+    const admin = await requireAdmin(request)
 
-    if (authResult.error) {
+    if (!admin) {
       return NextResponse.json(
-        { success: false, error: authResult.error },
-        { status: authResult.status }
-      )
-    }
-
-    const body = await request.json()
-    const {
-      first_name,
-      last_name,
-      email,
-      phone,
-      date_of_birth
-    } = body
-
-    // Validate required fields
-    if (!first_name || !last_name || !email || !phone) {
-      return NextResponse.json(
-        { success: false, error: 'Missing required fields: first_name, last_name, email, phone' },
-        { status: 400 }
-      )
-    }
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid email format' },
-        { status: 400 }
-      )
-    }
-
-    // Validate phone format (basic validation)
-    if (phone.length < 10) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid phone number' },
-        { status: 400 }
-      )
-    }
-
-    // Create driver
-    const { data: driver, error: driverError } = await supabase
-      .from('users')
-      .insert({
-        first_name: first_name.trim(),
-        last_name: last_name.trim(),
-        email: email.trim().toLowerCase(),
-        phone: phone.trim(),
-        date_of_birth: date_of_birth || null,
-        role: 'driver',
-        is_verified: true // Admin-created drivers are auto-verified
-      })
-      .select()
-      .single()
-
-    if (driverError) {
-      console.error('Driver creation error:', driverError)
-      if (driverError.code === '23505') { // Unique constraint violation
-        return NextResponse.json(
-          { success: false, error: 'Email or phone number already exists' },
-          { status: 409 }
-        )
-      }
-      return NextResponse.json(
-        { success: false, error: 'Failed to create driver' },
-        { status: 500 }
+        { success: false, error: 'Admin authentication required' },
+        { status: 401 }
       )
     }
 
     return NextResponse.json({
-      success: true,
-      data: { driver }
-    })
+      success: false,
+      error: 'Driver creation not implemented yet'
+    }, { status: 501 })
 
   } catch (error) {
     console.error('Driver creation error:', error)
@@ -195,108 +78,19 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    const supabase = await createServerClient()
-    const authResult = await verifyAdminAuth(supabase)
+    const admin = await requireAdmin(request)
 
-    if (authResult.error) {
+    if (!admin) {
       return NextResponse.json(
-        { success: false, error: authResult.error },
-        { status: authResult.status }
-      )
-    }
-
-    const body = await request.json()
-    const {
-      id,
-      first_name,
-      last_name,
-      email,
-      phone,
-      date_of_birth,
-      is_verified
-    } = body
-
-    // Validate required fields
-    if (!id || !first_name || !last_name || !email || !phone) {
-      return NextResponse.json(
-        { success: false, error: 'Missing required fields: id, first_name, last_name, email, phone' },
-        { status: 400 }
-      )
-    }
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid email format' },
-        { status: 400 }
-      )
-    }
-
-    // Validate phone format
-    if (phone.length < 10) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid phone number' },
-        { status: 400 }
-      )
-    }
-
-    // Ensure we're only updating driver accounts
-    const { data: existingUser, error: fetchError } = await supabase
-      .from('users')
-      .select('role')
-      .eq('id', id)
-      .single()
-
-    if (fetchError || !existingUser) {
-      return NextResponse.json(
-        { success: false, error: 'Driver not found' },
-        { status: 404 }
-      )
-    }
-
-    if (existingUser.role !== 'driver') {
-      return NextResponse.json(
-        { success: false, error: 'Can only update driver accounts' },
-        { status: 400 }
-      )
-    }
-
-    // Update driver
-    const { data: driver, error: driverError } = await supabase
-      .from('users')
-      .update({
-        first_name: first_name.trim(),
-        last_name: last_name.trim(),
-        email: email.trim().toLowerCase(),
-        phone: phone.trim(),
-        date_of_birth: date_of_birth || null,
-        is_verified: is_verified !== undefined ? is_verified : true,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', id)
-      .eq('role', 'driver')
-      .select()
-      .single()
-
-    if (driverError) {
-      console.error('Driver update error:', driverError)
-      if (driverError.code === '23505') { // Unique constraint violation
-        return NextResponse.json(
-          { success: false, error: 'Email or phone number already exists' },
-          { status: 409 }
-        )
-      }
-      return NextResponse.json(
-        { success: false, error: 'Failed to update driver' },
-        { status: 500 }
+        { success: false, error: 'Admin authentication required' },
+        { status: 401 }
       )
     }
 
     return NextResponse.json({
-      success: true,
-      data: { driver }
-    })
+      success: false,
+      error: 'Driver update not implemented yet'
+    }, { status: 501 })
 
   } catch (error) {
     console.error('Driver update error:', error)
@@ -309,91 +103,22 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    const supabase = await createServerClient()
-    const authResult = await verifyAdminAuth(supabase)
+    const admin = await requireAdmin(request)
 
-    if (authResult.error) {
+    if (!admin) {
       return NextResponse.json(
-        { success: false, error: authResult.error },
-        { status: authResult.status }
-      )
-    }
-
-    const { searchParams } = new URL(request.url)
-    const id = searchParams.get('id')
-
-    if (!id) {
-      return NextResponse.json(
-        { success: false, error: 'Driver ID is required' },
-        { status: 400 }
-      )
-    }
-
-    // Check if driver is assigned to any trips
-    const { data: trips, error: tripsError } = await supabase
-      .from('trips')
-      .select('id, status')
-      .eq('driver_id', id)
-      .limit(1)
-
-    if (tripsError) {
-      console.error('Error checking driver usage:', tripsError)
-      return NextResponse.json(
-        { success: false, error: 'Failed to check driver usage' },
-        { status: 500 }
-      )
-    }
-
-    if (trips && trips.length > 0) {
-      return NextResponse.json(
-        { success: false, error: 'Cannot delete driver with assigned trips. Update trips first.' },
-        { status: 400 }
-      )
-    }
-
-    // Check if it's actually a driver account
-    const { data: existingUser, error: fetchError } = await supabase
-      .from('users')
-      .select('role')
-      .eq('id', id)
-      .single()
-
-    if (fetchError || !existingUser) {
-      return NextResponse.json(
-        { success: false, error: 'Driver not found' },
-        { status: 404 }
-      )
-    }
-
-    if (existingUser.role !== 'driver') {
-      return NextResponse.json(
-        { success: false, error: 'Can only delete driver accounts' },
-        { status: 400 }
-      )
-    }
-
-    // Delete driver
-    const { error: deleteError } = await supabase
-      .from('users')
-      .delete()
-      .eq('id', id)
-      .eq('role', 'driver')
-
-    if (deleteError) {
-      console.error('Driver delete error:', deleteError)
-      return NextResponse.json(
-        { success: false, error: 'Failed to delete driver' },
-        { status: 500 }
+        { success: false, error: 'Admin authentication required' },
+        { status: 401 }
       )
     }
 
     return NextResponse.json({
-      success: true,
-      data: { message: 'Driver deleted successfully' }
-    })
+      success: false,
+      error: 'Driver deletion not implemented yet'
+    }, { status: 501 })
 
   } catch (error) {
-    console.error('Driver delete error:', error)
+    console.error('Driver deletion error:', error)
     return NextResponse.json(
       { success: false, error: 'Internal server error' },
       { status: 500 }

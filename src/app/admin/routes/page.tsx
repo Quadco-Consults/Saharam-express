@@ -7,7 +7,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Switch } from '@/components/ui/switch'
-import { createBrowserClientHelper } from '@/lib/supabase'
 import { toast } from 'sonner'
 
 interface RouteStats {
@@ -55,7 +54,6 @@ export default function AdminRoutesPage() {
   const [submitting, setSubmitting] = useState(false)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
 
-  const supabase = createBrowserClientHelper()
 
   useEffect(() => {
     loadRoutes()

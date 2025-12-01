@@ -26,9 +26,9 @@ export default function ProfilePage() {
   const { register, handleSubmit, formState: { errors }, reset } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      firstName: user?.profile?.firstName || '',
-      lastName: user?.profile?.lastName || '',
-      phone: user?.profile?.phone || '',
+      firstName: user?.firstName || '',
+      lastName: user?.lastName || '',
+      phone: '',
     },
   })
 
@@ -50,9 +50,9 @@ export default function ProfilePage() {
 
   const handleCancel = () => {
     reset({
-      firstName: user?.profile?.firstName || '',
-      lastName: user?.profile?.lastName || '',
-      phone: user?.profile?.phone || '',
+      firstName: user?.firstName || '',
+      lastName: user?.lastName || '',
+      phone: '',
     })
     setIsEditing(false)
     setMessage(null)
@@ -115,15 +115,15 @@ export default function ProfilePage() {
               <div className="flex items-center space-x-4">
                 <div className="w-16 h-16 bg-saharam-500 rounded-full flex items-center justify-center">
                   <span className="text-white text-2xl font-bold">
-                    {user?.profile?.firstName?.[0] || user?.email?.[0]?.toUpperCase()}
+                    {user?.firstName?.[0] || user?.email?.[0]?.toUpperCase()}
                   </span>
                 </div>
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900">
-                    {user?.profile?.firstName} {user?.profile?.lastName}
+                    {user?.firstName} {user?.lastName}
                   </h2>
-                  <p className="text-gray-600 capitalize">{user?.profile?.role || 'Customer'}</p>
-                  {user?.profile?.isVerified && (
+                  <p className="text-gray-600 capitalize">{user?.role || 'Customer'}</p>
+                  {user?.role === 'ADMIN' && (
                     <div className="flex items-center gap-1 mt-1">
                       <Shield className="w-4 h-4 text-green-500" />
                       <span className="text-sm text-green-600">Verified</span>
@@ -215,7 +215,7 @@ export default function ProfilePage() {
                 <div className="relative">
                   <input
                     type="text"
-                    value={user?.created_at ? formatDate(user.created_at) : 'Unknown'}
+                    value={'Unknown'}
                     disabled
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
                   />
