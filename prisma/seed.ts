@@ -40,6 +40,7 @@ async function main() {
       { fromCity: 'Abuja', toCity: 'Jos', distance: 200, estimatedDuration: 180, basePrice: 3000.00 },
       { fromCity: 'Ibadan', toCity: 'Abuja', distance: 620, estimatedDuration: 360, basePrice: 4000.00 },
       { fromCity: 'Kano', toCity: 'Kaduna', distance: 160, estimatedDuration: 120, basePrice: 2000.00 },
+      { fromCity: 'Kano', toCity: 'Lagos', distance: 1050, estimatedDuration: 660, basePrice: 6500.00 },
       { fromCity: 'Lagos', toCity: 'Benin', distance: 320, estimatedDuration: 240, basePrice: 3500.00 },
       { fromCity: 'Benin', toCity: 'Asaba', distance: 140, estimatedDuration: 90, basePrice: 2000.00 },
       { fromCity: 'Port Harcourt', toCity: 'Lagos', distance: 450, estimatedDuration: 300, basePrice: 4000.00 }

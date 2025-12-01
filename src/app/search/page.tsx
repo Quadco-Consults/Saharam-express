@@ -12,28 +12,14 @@ import { formatDate } from '@/utils/formatters'
 export const dynamic = 'force-dynamic'
 
 interface SearchResults {
-  trips: (Trip & {
-    route: {
-      from_city: string
-      to_city: string
-      distance: number
-      estimated_duration: number
-    }
-    vehicle: {
-      plate_number: string
-      model: string
-      capacity: number
-    }
-    driver: {
-      first_name: string
-      last_name: string
-    }
-  })[]
-  totalCount: number
+  results: {
+    total: number
+    trips: any[]
+  }
   searchCriteria: {
-    from: string
-    to: string
-    date: string
+    fromCity: string
+    toCity: string
+    departureDate: string
     passengers: number
   }
 }
@@ -194,11 +180,11 @@ function SearchContent() {
               Try Again
             </button>
           </div>
-        ) : searchResults && searchResults.trips.length > 0 ? (
+        ) : searchResults && searchResults.results.trips.length > 0 ? (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <p className="text-gray-600">
-                Found {searchResults.totalCount} trip{searchResults.totalCount !== 1 ? 's' : ''}
+                Found {searchResults.results.total} trip{searchResults.results.total !== 1 ? 's' : ''}
               </p>
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <span>Sort by:</span>
@@ -211,7 +197,7 @@ function SearchContent() {
             </div>
 
             <div className="grid gap-6">
-              {searchResults.trips.map((trip) => (
+              {searchResults.results.trips.map((trip) => (
                 <TripCard
                   key={trip.id}
                   trip={trip}

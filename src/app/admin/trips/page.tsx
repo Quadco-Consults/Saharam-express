@@ -12,8 +12,14 @@ import {
   Trash2,
   Search,
   Filter,
-  Eye
+  Eye,
+  DollarSign
 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { toast } from 'sonner'
 import { formatDateTime, formatCurrency } from '@/utils/formatters'
 import { cn } from '@/utils/cn'
 
@@ -39,16 +45,64 @@ interface Trip {
   } | null
 }
 
+interface Route {
+  id: string
+  from_city: string
+  to_city: string
+  distance: number
+  estimated_duration: number
+}
+
+interface Vehicle {
+  id: string
+  plate_number: string
+  model: string
+  capacity: number
+  is_active: boolean
+}
+
+interface Driver {
+  id: string
+  first_name: string
+  last_name: string
+  is_verified: boolean
+}
+
+interface TripFormData {
+  routeId: string
+  vehicleId: string
+  driverId: string
+  departureTime: string
+  basePrice: string
+}
+
+const initialFormData: TripFormData = {
+  routeId: '',
+  vehicleId: '',
+  driverId: '',
+  departureTime: '',
+  basePrice: ''
+}
+
 export default function AdminTripsPage() {
   const [trips, setTrips] = useState<Trip[]>([])
+  const [routes, setRoutes] = useState<Route[]>([])
+  const [vehicles, setVehicles] = useState<Vehicle[]>([])
+  const [drivers, setDrivers] = useState<Driver[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [dateFilter, setDateFilter] = useState<string>('')
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [editingTrip, setEditingTrip] = useState<Trip | null>(null)
+  const [formData, setFormData] = useState<TripFormData>(initialFormData)
+  const [submitting, setSubmitting] = useState(false)
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
   const router = useRouter()
 
   useEffect(() => {
     fetchTrips()
+    fetchFormData()
   }, [])
 
   const fetchTrips = async () => {
@@ -73,8 +127,145 @@ export default function AdminTripsPage() {
     }
   }
 
+  const fetchFormData = async () => {
+    try {
+      const token = localStorage.getItem('auth_token')
+      const headers = {
+        'Authorization': `Bearer ${token}`
+      }
+
+      const [routesRes, vehiclesRes, driversRes] = await Promise.all([
+        fetch('/api/admin/routes', { headers }),
+        fetch('/api/admin/vehicles', { headers }),
+        fetch('/api/admin/drivers', { headers })
+      ])
+
+      const [routesData, vehiclesData, driversData] = await Promise.all([
+        routesRes.json(),
+        vehiclesRes.json(),
+        driversRes.json()
+      ])
+
+      if (routesData.success) setRoutes(routesData.data.routes.filter((r: Route) => r.is_active !== false))
+      if (vehiclesData.success) setVehicles(vehiclesData.data.vehicles.filter((v: Vehicle) => v.is_active))
+      if (driversData.success) setDrivers(driversData.data.drivers.filter((d: Driver) => d.is_verified))
+
+    } catch (error) {
+      console.error('Error fetching form data:', error)
+    }
+  }
+
+  const openModal = (trip?: Trip) => {
+    if (trip) {
+      setEditingTrip(trip)
+      // Find the route, vehicle, and driver IDs based on the trip data
+      // This is a simplified approach - in a real app you'd want to store these IDs in the trip data
+      const route = routes.find(r => r.from_city === trip.route.from_city && r.to_city === trip.route.to_city)
+      const vehicle = vehicles.find(v => v.plate_number === trip.vehicle.plate_number)
+      const driver = drivers.find(d => trip.driver && d.first_name === trip.driver.first_name && d.last_name === trip.driver.last_name)
+
+      setFormData({
+        routeId: route?.id || '',
+        vehicleId: vehicle?.id || '',
+        driverId: driver?.id || '',
+        departureTime: new Date(trip.departure_time).toISOString().slice(0, 16),
+        basePrice: trip.base_price.toString()
+      })
+    } else {
+      setEditingTrip(null)
+      setFormData(initialFormData)
+    }
+    setIsModalOpen(true)
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false)
+    setEditingTrip(null)
+    setFormData(initialFormData)
+  }
+
+  const handleInputChange = (field: keyof TripFormData, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
+  const validateForm = (): boolean => {
+    if (!formData.routeId.trim()) {
+      toast.error('Please select a route')
+      return false
+    }
+    if (!formData.vehicleId.trim()) {
+      toast.error('Please select a vehicle')
+      return false
+    }
+    if (!formData.driverId.trim()) {
+      toast.error('Please select a driver')
+      return false
+    }
+    if (!formData.departureTime.trim()) {
+      toast.error('Please select departure time')
+      return false
+    }
+    if (!formData.basePrice || isNaN(Number(formData.basePrice)) || Number(formData.basePrice) <= 0) {
+      toast.error('Valid base price is required')
+      return false
+    }
+    return true
+  }
+
+  const handleSubmit = async () => {
+    if (!validateForm()) return
+
+    setSubmitting(true)
+    try {
+      const payload: any = {
+        routeId: formData.routeId,
+        vehicleId: formData.vehicleId,
+        driverId: formData.driverId,
+        departureTime: new Date(formData.departureTime).toISOString(),
+        basePrice: parseFloat(formData.basePrice)
+      }
+
+      if (editingTrip) {
+        payload.id = editingTrip.id
+      }
+
+      const token = localStorage.getItem('auth_token')
+      const response = await fetch('/api/admin/trips', {
+        method: editingTrip ? 'PUT' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(payload),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        toast.success(editingTrip ? 'Trip updated successfully' : 'Trip created successfully')
+        await fetchTrips()
+        closeModal()
+      } else {
+        toast.error(result.error || 'Failed to save trip')
+      }
+    } catch (error) {
+      console.error('Error saving trip:', error)
+      toast.error('Failed to save trip')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
   const handleDeleteTrip = async (tripId: string) => {
-    if (!confirm('Are you sure you want to delete this trip?')) return
+    if (deleteConfirm !== tripId) {
+      setDeleteConfirm(tripId)
+      toast.warning('Click delete again to confirm')
+      setTimeout(() => setDeleteConfirm(null), 3000)
+      return
+    }
 
     try {
       const token = localStorage.getItem('auth_token')
@@ -85,14 +276,18 @@ export default function AdminTripsPage() {
         }
       })
 
-      if (response.ok) {
-        setTrips(trips.filter(trip => trip.id !== tripId))
+      const result = await response.json()
+
+      if (result.success) {
+        toast.success('Trip deleted successfully')
+        await fetchTrips()
+        setDeleteConfirm(null)
       } else {
-        alert('Failed to delete trip')
+        toast.error(result.error || 'Failed to delete trip')
       }
     } catch (error) {
       console.error('Error deleting trip:', error)
-      alert('Error deleting trip')
+      toast.error('Failed to delete trip')
     }
   }
 
@@ -171,7 +366,7 @@ export default function AdminTripsPage() {
             <p className="text-gray-600 mt-1">Manage all scheduled trips and routes</p>
           </div>
           <button
-            onClick={() => router.push('/admin/trips/create')}
+            onClick={() => openModal()}
             className="inline-flex items-center gap-2 px-4 py-2 bg-saharan-500 text-white rounded-lg hover:bg-saharan-600 transition-colors"
           >
             <Plus className="w-4 h-4" />
@@ -229,7 +424,7 @@ export default function AdminTripsPage() {
               }
             </p>
             <button
-              onClick={() => router.push('/admin/trips/create')}
+              onClick={() => openModal()}
               className="inline-flex items-center gap-2 px-6 py-3 bg-saharan-500 text-white rounded-lg hover:bg-saharan-600 transition-colors"
             >
               <Plus className="w-4 h-4" />
@@ -332,7 +527,7 @@ export default function AdminTripsPage() {
                             <Eye className="w-4 h-4" />
                           </button>
                           <button
-                            onClick={() => router.push(`/admin/trips/${trip.id}/edit`)}
+                            onClick={() => openModal(trip)}
                             className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
                             title="Edit Trip"
                           >
@@ -340,8 +535,8 @@ export default function AdminTripsPage() {
                           </button>
                           <button
                             onClick={() => handleDeleteTrip(trip.id)}
-                            className="p-1 text-gray-400 hover:text-red-600 transition-colors"
-                            title="Delete Trip"
+                            className={`p-1 text-gray-400 hover:text-red-600 transition-colors ${deleteConfirm === trip.id ? 'bg-red-100 text-red-600' : ''}`}
+                            title={deleteConfirm === trip.id ? 'Confirm Delete' : 'Delete Trip'}
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -373,6 +568,127 @@ export default function AdminTripsPage() {
           </div>
         )}
       </div>
+
+      {/* Add/Edit Trip Modal */}
+      <Dialog open={isModalOpen} onOpenChange={closeModal}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {editingTrip ? 'Edit Trip' : 'Add New Trip'}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            {/* Route Selection */}
+            <div>
+              <Label htmlFor="routeId">Route *</Label>
+              <div className="relative">
+                <select
+                  id="routeId"
+                  value={formData.routeId}
+                  onChange={(e) => handleInputChange('routeId', e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
+                >
+                  <option value="">Select a route</option>
+                  {routes.map((route) => (
+                    <option key={route.id} value={route.id}>
+                      {route.from_city} → {route.to_city} ({route.distance}km, ~{Math.round(route.estimated_duration / 60)}h)
+                    </option>
+                  ))}
+                </select>
+                <MapPin className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+              </div>
+            </div>
+
+            {/* Vehicle Selection */}
+            <div>
+              <Label htmlFor="vehicleId">Vehicle *</Label>
+              <div className="relative">
+                <select
+                  id="vehicleId"
+                  value={formData.vehicleId}
+                  onChange={(e) => handleInputChange('vehicleId', e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
+                >
+                  <option value="">Select a vehicle</option>
+                  {vehicles.map((vehicle) => (
+                    <option key={vehicle.id} value={vehicle.id}>
+                      {vehicle.model} - {vehicle.plate_number} ({vehicle.capacity} seats)
+                    </option>
+                  ))}
+                </select>
+                <Car className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+              </div>
+            </div>
+
+            {/* Driver Selection */}
+            <div>
+              <Label htmlFor="driverId">Driver *</Label>
+              <div className="relative">
+                <select
+                  id="driverId"
+                  value={formData.driverId}
+                  onChange={(e) => handleInputChange('driverId', e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saharan-500 focus:border-transparent"
+                >
+                  <option value="">Select a driver</option>
+                  {drivers.map((driver) => (
+                    <option key={driver.id} value={driver.id}>
+                      {driver.first_name} {driver.last_name}
+                    </option>
+                  ))}
+                </select>
+                <Users className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+              </div>
+            </div>
+
+            {/* Departure Time */}
+            <div>
+              <Label htmlFor="departureTime">Departure Time *</Label>
+              <div className="relative">
+                <Input
+                  id="departureTime"
+                  type="datetime-local"
+                  value={formData.departureTime}
+                  onChange={(e) => handleInputChange('departureTime', e.target.value)}
+                  min={new Date().toISOString().slice(0, 16)}
+                  className="pl-10"
+                />
+                <Calendar className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+              </div>
+            </div>
+
+            {/* Base Price */}
+            <div>
+              <Label htmlFor="basePrice">Base Price (₦) *</Label>
+              <div className="relative">
+                <Input
+                  id="basePrice"
+                  type="number"
+                  step="100"
+                  value={formData.basePrice}
+                  onChange={(e) => handleInputChange('basePrice', e.target.value)}
+                  placeholder="5000"
+                  className="pl-10"
+                />
+                <DollarSign className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+              </div>
+              <p className="text-sm text-gray-600 mt-1">
+                Price per seat for this trip
+              </p>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={closeModal} disabled={submitting}>
+              Cancel
+            </Button>
+            <Button onClick={handleSubmit} disabled={submitting}>
+              {submitting ? 'Saving...' : editingTrip ? 'Update Trip' : 'Add Trip'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

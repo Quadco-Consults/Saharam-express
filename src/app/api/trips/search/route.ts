@@ -14,19 +14,68 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
 
+    const fromCity = searchParams.get('fromCity') || searchParams.get('from') || ''
+    const toCity = searchParams.get('toCity') || searchParams.get('to') || ''
+    const departureDate = searchParams.get('departureDate') || searchParams.get('date') || ''
+    const passengers = parseInt(searchParams.get('passengers') || '1')
+    const sortBy = (searchParams.get('sortBy') || 'departure') as 'price' | 'duration' | 'departure'
+
+    console.log('Search params received:', {
+      url: request.url,
+      fromCity,
+      toCity,
+      departureDate,
+      passengers,
+      allParams: Object.fromEntries(searchParams.entries())
+    })
+
+    // Early validation for required fields
+    if (!fromCity.trim()) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Origin city is required',
+          details: ['fromCity or from parameter is required']
+        },
+        { status: 400 }
+      )
+    }
+
+    if (!toCity.trim()) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Destination city is required',
+          details: ['toCity or to parameter is required']
+        },
+        { status: 400 }
+      )
+    }
+
+    if (!departureDate.trim()) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Departure date is required',
+          details: ['departureDate or date parameter is required']
+        },
+        { status: 400 }
+      )
+    }
+
     const queryData = {
-      fromCity: searchParams.get('fromCity') || '',
-      toCity: searchParams.get('toCity') || '',
-      departureDate: searchParams.get('departureDate') || '',
-      passengers: parseInt(searchParams.get('passengers') || '1'),
-      sortBy: (searchParams.get('sortBy') || 'departure') as 'price' | 'duration' | 'departure'
+      fromCity: fromCity.trim(),
+      toCity: toCity.trim(),
+      departureDate: departureDate.trim(),
+      passengers,
+      sortBy
     }
 
     const validatedData = searchTripsSchema.parse(queryData)
 
     // Parse departure date
-    const departureDate = new Date(validatedData.departureDate)
-    const startOfDay = new Date(departureDate.getFullYear(), departureDate.getMonth(), departureDate.getDate())
+    const departureDateObj = new Date(validatedData.departureDate)
+    const startOfDay = new Date(departureDateObj.getFullYear(), departureDateObj.getMonth(), departureDateObj.getDate())
     const endOfDay = new Date(startOfDay)
     endOfDay.setDate(endOfDay.getDate() + 1)
 

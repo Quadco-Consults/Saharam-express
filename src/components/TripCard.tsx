@@ -5,29 +5,15 @@ import { formatTime, formatCurrency, formatDuration } from '@/utils/formatters'
 import { cn } from '@/utils/cn'
 
 interface TripCardProps {
-  trip: Trip & {
-    route: {
-      from_city: string
-      to_city: string
-      distance: number
-      estimated_duration: number
-    }
-    vehicle: {
-      plate_number: string
-      model: string
-      capacity: number
-    }
-    driver: {
-      first_name: string
-      last_name: string
-    } | null
-  }
+  trip: any
   onSelect: (trip: any) => void
   isSelected?: boolean
 }
 
 export default function TripCard({ trip, onSelect, isSelected = false }: TripCardProps) {
-  const occupancyRate = ((trip.totalSeats - trip.availableSeats) / trip.totalSeats) * 100
+  const totalSeats = trip.seats?.total || trip.totalSeats || 0
+  const availableSeats = trip.seats?.available || trip.availableSeats || 0
+  const occupancyRate = totalSeats > 0 ? ((totalSeats - availableSeats) / totalSeats) * 100 : 0
   const isAlmostFull = occupancyRate > 80
 
   return (
@@ -48,17 +34,17 @@ export default function TripCard({ trip, onSelect, isSelected = false }: TripCar
           </div>
           <div>
             <h3 className="font-semibold text-gray-900">
-              {trip.route.from_city} → {trip.route.to_city}
+              {trip.route?.fromCity || trip.route?.from_city} → {trip.route?.toCity || trip.route?.to_city}
             </h3>
             <p className="text-sm text-gray-600">
-              {trip.vehicle.model} • {trip.vehicle.plate_number}
+              {trip.vehicle?.model} • {trip.vehicle?.plateNumber || trip.vehicle?.plate_number}
             </p>
           </div>
         </div>
 
         <div className="text-right">
           <p className="text-2xl font-bold text-saharan-600">
-            {formatCurrency((trip as any).basePrice || (trip as any).base_price || 4500)}
+            {formatCurrency(trip.pricing?.basePrice || trip.basePrice || trip.base_price || 4500)}
           </p>
           <p className="text-sm text-gray-600">per seat</p>
         </div>
@@ -72,7 +58,7 @@ export default function TripCard({ trip, onSelect, isSelected = false }: TripCar
             <span className="text-sm text-gray-600">Departure</span>
           </div>
           <p className="text-lg font-semibold text-gray-900">
-            {formatTime(trip.departureTime)}
+            {formatTime(trip.schedule?.departureTime || trip.departureTime)}
           </p>
         </div>
 
@@ -82,7 +68,7 @@ export default function TripCard({ trip, onSelect, isSelected = false }: TripCar
             <span className="text-sm text-gray-600">Duration</span>
           </div>
           <p className="text-lg font-semibold text-gray-900">
-            {formatDuration(trip.route.estimated_duration)}
+            {formatDuration(trip.schedule?.estimatedDuration || trip.route?.estimated_duration || trip.route?.estimatedDuration)}
           </p>
         </div>
 
@@ -92,7 +78,7 @@ export default function TripCard({ trip, onSelect, isSelected = false }: TripCar
             <span className="text-sm text-gray-600">Arrival</span>
           </div>
           <p className="text-lg font-semibold text-gray-900">
-            {formatTime(trip.arrivalTime)}
+            {formatTime(trip.schedule?.arrivalTime || trip.arrivalTime)}
           </p>
         </div>
       </div>
@@ -102,7 +88,7 @@ export default function TripCard({ trip, onSelect, isSelected = false }: TripCar
         <div className="flex items-center gap-2">
           <Users className="w-4 h-4 text-gray-400" />
           <span className="text-sm text-gray-600">
-            {trip.availableSeats} of {trip.totalSeats} seats available
+            {availableSeats} of {totalSeats} seats available
           </span>
         </div>
 
@@ -131,13 +117,16 @@ export default function TripCard({ trip, onSelect, isSelected = false }: TripCar
       <div className="flex items-center justify-between text-sm">
         <div className="text-gray-600">
           Driver: <span className="font-medium text-gray-900">
-            {trip.driver ? `${trip.driver.first_name} ${trip.driver.last_name}` : 'To be assigned'}
+            {trip.driver ?
+              (trip.driver.name || `${trip.driver.first_name} ${trip.driver.last_name}`) :
+              'To be assigned'
+            }
           </span>
         </div>
 
         <div className="flex items-center gap-1 text-green-600">
           <Star className="w-4 h-4 fill-current" />
-          <span className="font-medium">4.8</span>
+          <span className="font-medium">{trip.driver?.rating || 4.8}</span>
         </div>
       </div>
 
