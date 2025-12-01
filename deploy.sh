@@ -29,10 +29,10 @@ fi
 
 echo -e "${GREEN}✅ Prerequisites check passed${NC}"
 
-# Install Vercel CLI if not present
-if ! command -v vercel &> /dev/null; then
-    echo "📦 Installing Vercel CLI..."
-    npm install -g vercel
+# Check if Vercel CLI is available via npx
+if ! npx vercel --version &> /dev/null; then
+    echo -e "${RED}❌ Vercel CLI not available. Please install Node.js${NC}"
+    exit 1
 fi
 
 # Check if we're in a git repository
@@ -68,7 +68,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "🚀 Starting Vercel deployment..."
 
     # Run vercel deploy
-    vercel --prod
+    npx vercel --prod
 
     echo -e "${GREEN}✅ Deployment complete!${NC}"
     echo
@@ -78,5 +78,5 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "3. Test your live deployment"
 
 else
-    echo "⏸️  Deployment paused. Run 'vercel' when ready to deploy."
+    echo "⏸️  Deployment paused. Run 'npx vercel' when ready to deploy."
 fi
