@@ -6,18 +6,33 @@ const prisma = new PrismaClient()
 async function main() {
   console.log('🌱 Seeding Saharam Express database...')
 
-  // Create admin user
-  const admin = await AuthService.createAdminUser(
-    'admin@saharam-express.com',
-    'admin123',
-    'Admin',
-    'User'
-  )
-  console.log('✅ Created admin user:', admin.email)
+  // Create admin user (skip if exists)
+  let admin
+  try {
+    admin = await AuthService.createAdminUser(
+      'admin@saharam-express.com',
+      'admin123',
+      'Admin',
+      'User'
+    )
+    console.log('✅ Created admin user:', admin.email)
+  } catch (error: any) {
+    if (error.code === 'P2002') {
+      console.log('✅ Admin user already exists, skipping creation')
+      admin = await prisma.user.findUnique({
+        where: { email: 'admin@saharam-express.com' }
+      })
+    } else {
+      throw error
+    }
+  }
 
-  // Create sample routes
-  const routes = await prisma.route.createMany({
-    data: [
+  // Create sample routes (skip if exist)
+  const existingRoutes = await prisma.route.count()
+  let routes
+  if (existingRoutes === 0) {
+    routes = await prisma.route.createMany({
+      data: [
       { fromCity: 'Lagos', toCity: 'Abuja', distance: 750, estimatedDuration: 480, basePrice: 4500.00 },
       { fromCity: 'Lagos', toCity: 'Ibadan', distance: 130, estimatedDuration: 120, basePrice: 2500.00 },
       { fromCity: 'Lagos', toCity: 'Kano', distance: 1050, estimatedDuration: 660, basePrice: 6500.00 },
@@ -29,59 +44,82 @@ async function main() {
       { fromCity: 'Benin', toCity: 'Asaba', distance: 140, estimatedDuration: 90, basePrice: 2000.00 },
       { fromCity: 'Port Harcourt', toCity: 'Lagos', distance: 450, estimatedDuration: 300, basePrice: 4000.00 }
     ]
-  })
-  console.log(`✅ Created ${routes.count} routes`)
+    })
+    console.log(`✅ Created ${routes.count} routes`)
+  } else {
+    console.log('✅ Routes already exist, skipping creation')
+  }
 
-  // Create sample vehicles
-  const vehicles = await prisma.vehicle.createMany({
-    data: [
-      { plateNumber: 'SAH-001-AA', model: 'Toyota Hiace', capacity: 18, year: 2022, status: 'ACTIVE' },
-      { plateNumber: 'SAH-002-AB', model: 'Mercedes Sprinter', capacity: 22, year: 2021, status: 'ACTIVE' },
-      { plateNumber: 'SAH-003-AC', model: 'Toyota Coaster', capacity: 30, year: 2023, status: 'ACTIVE' },
-      { plateNumber: 'SAH-004-AD', model: 'Iveco Daily', capacity: 25, year: 2022, status: 'ACTIVE' },
-      { plateNumber: 'SAH-005-AE', model: 'Ford Transit', capacity: 20, year: 2021, status: 'ACTIVE' },
-      { plateNumber: 'SAH-006-AF', model: 'Toyota Hiace', capacity: 18, year: 2020, status: 'MAINTENANCE' },
-      { plateNumber: 'SAH-007-AG', model: 'Mercedes Sprinter', capacity: 22, year: 2023, status: 'ACTIVE' },
-      { plateNumber: 'SAH-008-AH', model: 'Toyota Coaster', capacity: 30, year: 2022, status: 'ACTIVE' },
-      { plateNumber: 'SAH-009-AI', model: 'Iveco Daily', capacity: 25, year: 2021, status: 'ACTIVE' },
-      { plateNumber: 'SAH-010-AJ', model: 'Ford Transit', capacity: 20, year: 2023, status: 'ACTIVE' }
-    ]
-  })
-  console.log(`✅ Created ${vehicles.count} vehicles`)
+  // Create sample vehicles (skip if exist)
+  const existingVehicles = await prisma.vehicle.count()
+  let vehicles
+  if (existingVehicles === 0) {
+    vehicles = await prisma.vehicle.createMany({
+      data: [
+        { plateNumber: 'SAH-001-AA', model: 'Toyota Hiace', capacity: 18, year: 2022, status: 'ACTIVE' },
+        { plateNumber: 'SAH-002-AB', model: 'Mercedes Sprinter', capacity: 22, year: 2021, status: 'ACTIVE' },
+        { plateNumber: 'SAH-003-AC', model: 'Toyota Coaster', capacity: 30, year: 2023, status: 'ACTIVE' },
+        { plateNumber: 'SAH-004-AD', model: 'Iveco Daily', capacity: 25, year: 2022, status: 'ACTIVE' },
+        { plateNumber: 'SAH-005-AE', model: 'Ford Transit', capacity: 20, year: 2021, status: 'ACTIVE' },
+        { plateNumber: 'SAH-006-AF', model: 'Toyota Hiace', capacity: 18, year: 2020, status: 'MAINTENANCE' },
+        { plateNumber: 'SAH-007-AG', model: 'Mercedes Sprinter', capacity: 22, year: 2023, status: 'ACTIVE' },
+        { plateNumber: 'SAH-008-AH', model: 'Toyota Coaster', capacity: 30, year: 2022, status: 'ACTIVE' },
+        { plateNumber: 'SAH-009-AI', model: 'Iveco Daily', capacity: 25, year: 2021, status: 'ACTIVE' },
+        { plateNumber: 'SAH-010-AJ', model: 'Ford Transit', capacity: 20, year: 2023, status: 'ACTIVE' }
+      ]
+    })
+    console.log(`✅ Created ${vehicles.count} vehicles`)
+  } else {
+    console.log('✅ Vehicles already exist, skipping creation')
+  }
 
-  // Create sample drivers
-  const drivers = await prisma.driver.createMany({
-    data: [
-      { firstName: 'Ibrahim', lastName: 'Mohammed', phone: '+2348012345678', email: 'ibrahim.mohammed@saharam.com', licenseNumber: 'KN123456789', licenseExpiry: new Date('2025-12-31'), status: 'ACTIVE', rating: 4.8 },
-      { firstName: 'Fatima', lastName: 'Abubakar', phone: '+2348023456789', email: 'fatima.abubakar@saharam.com', licenseNumber: 'LG234567890', licenseExpiry: new Date('2026-06-30'), status: 'ACTIVE', rating: 4.9 },
-      { firstName: 'Yusuf', lastName: 'Aliyu', phone: '+2348034567890', email: 'yusuf.aliyu@saharam.com', licenseNumber: 'AB345678901', licenseExpiry: new Date('2025-09-15'), status: 'ACTIVE', rating: 4.7 },
-      { firstName: 'Khadija', lastName: 'Usman', phone: '+2348045678901', email: 'khadija.usman@saharam.com', licenseNumber: 'KD456789012', licenseExpiry: new Date('2026-03-20'), status: 'ACTIVE', rating: 4.8 },
-      { firstName: 'Ahmed', lastName: 'Bello', phone: '+2348056789012', email: 'ahmed.bello@saharam.com', licenseNumber: 'JO567890123', licenseExpiry: new Date('2025-11-10'), status: 'ACTIVE', rating: 4.6 }
-    ]
-  })
-  console.log(`✅ Created ${drivers.count} drivers`)
+  // Create sample drivers (skip if exist)
+  const existingDrivers = await prisma.driver.count()
+  let drivers
+  if (existingDrivers === 0) {
+    drivers = await prisma.driver.createMany({
+      data: [
+        { firstName: 'Ibrahim', lastName: 'Mohammed', phone: '+2348012345678', email: 'ibrahim.mohammed@saharam.com', licenseNumber: 'KN123456789', licenseExpiry: new Date('2025-12-31'), status: 'ACTIVE', rating: 4.8 },
+        { firstName: 'Fatima', lastName: 'Abubakar', phone: '+2348023456789', email: 'fatima.abubakar@saharam.com', licenseNumber: 'LG234567890', licenseExpiry: new Date('2026-06-30'), status: 'ACTIVE', rating: 4.9 },
+        { firstName: 'Yusuf', lastName: 'Aliyu', phone: '+2348034567890', email: 'yusuf.aliyu@saharam.com', licenseNumber: 'AB345678901', licenseExpiry: new Date('2025-09-15'), status: 'ACTIVE', rating: 4.7 },
+        { firstName: 'Khadija', lastName: 'Usman', phone: '+2348045678901', email: 'khadija.usman@saharam.com', licenseNumber: 'KD456789012', licenseExpiry: new Date('2026-03-20'), status: 'ACTIVE', rating: 4.8 },
+        { firstName: 'Ahmed', lastName: 'Bello', phone: '+2348056789012', email: 'ahmed.bello@saharam.com', licenseNumber: 'JO567890123', licenseExpiry: new Date('2025-11-10'), status: 'ACTIVE', rating: 4.6 }
+      ]
+    })
+    console.log(`✅ Created ${drivers.count} drivers`)
+  } else {
+    console.log('✅ Drivers already exist, skipping creation')
+  }
 
-  // Create admin settings
-  const settings = await prisma.adminSetting.createMany({
-    data: [
-      { key: 'company_name', value: 'Saharam Express Limited', description: 'Company name displayed on tickets and emails' },
-      { key: 'support_email', value: 'support@saharam-express.com', description: 'Customer support email address' },
-      { key: 'support_phone', value: '+234-800-SAHARAM', description: 'Customer support phone number' },
-      { key: 'loyalty_points_rate', value: '100', description: 'Points earned per 1000 NGN spent' },
-      { key: 'loyalty_redemption_rate', value: '10', description: 'NGN value per loyalty point' },
-      { key: 'booking_cancellation_hours', value: '24', description: 'Hours before departure when cancellation is allowed' },
-      { key: 'max_seats_per_booking', value: '8', description: 'Maximum number of seats per single booking' },
-      { key: 'website_url', value: 'https://saharam-express.vercel.app', description: 'Company website URL' }
-    ]
-  })
-  console.log(`✅ Created ${settings.count} admin settings`)
+  // Create admin settings (skip if exist)
+  const existingSettings = await prisma.adminSetting.count()
+  let settings
+  if (existingSettings === 0) {
+    settings = await prisma.adminSetting.createMany({
+      data: [
+        { key: 'company_name', value: 'Saharam Express Limited', description: 'Company name displayed on tickets and emails' },
+        { key: 'support_email', value: 'support@saharam-express.com', description: 'Customer support email address' },
+        { key: 'support_phone', value: '+234-800-SAHARAM', description: 'Customer support phone number' },
+        { key: 'loyalty_points_rate', value: '100', description: 'Points earned per 1000 NGN spent' },
+        { key: 'loyalty_redemption_rate', value: '10', description: 'NGN value per loyalty point' },
+        { key: 'booking_cancellation_hours', value: '24', description: 'Hours before departure when cancellation is allowed' },
+        { key: 'max_seats_per_booking', value: '8', description: 'Maximum number of seats per single booking' },
+        { key: 'website_url', value: 'https://saharam-express.vercel.app', description: 'Company website URL' }
+      ]
+    })
+    console.log(`✅ Created ${settings.count} admin settings`)
+  } else {
+    console.log('✅ Admin settings already exist, skipping creation')
+  }
 
-  // Create sample trips for the next 30 days
-  const allRoutes = await prisma.route.findMany()
-  const allVehicles = await prisma.vehicle.findMany({ where: { status: 'ACTIVE' } })
-  const allDrivers = await prisma.driver.findMany({ where: { status: 'ACTIVE' } })
+  // Create sample trips for the next 30 days (skip if exist)
+  const existingTrips = await prisma.trip.count()
+  if (existingTrips === 0) {
+    const allRoutes = await prisma.route.findMany()
+    const allVehicles = await prisma.vehicle.findMany({ where: { status: 'ACTIVE' } })
+    const allDrivers = await prisma.driver.findMany({ where: { status: 'ACTIVE' } })
 
-  const trips = []
+    const trips = []
   const now = new Date()
 
   for (let day = 0; day < 30; day++) {
@@ -148,13 +186,17 @@ async function main() {
     }
   }
 
-  // Create trips in batches
-  for (let i = 0; i < trips.length; i += 50) {
-    const batch = trips.slice(i, i + 50)
-    await prisma.trip.createMany({ data: batch })
+    // Create trips in batches
+    for (let i = 0; i < trips.length; i += 50) {
+      const batch = trips.slice(i, i + 50)
+      await prisma.trip.createMany({ data: batch })
+    }
+
+    console.log(`✅ Created ${trips.length} trips for the next 30 days`)
+  } else {
+    console.log('✅ Trips already exist, skipping creation')
   }
 
-  console.log(`✅ Created ${trips.length} trips for the next 30 days`)
   console.log('🎉 Database seeding completed!')
 }
 
