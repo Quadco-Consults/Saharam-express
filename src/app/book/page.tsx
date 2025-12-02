@@ -119,16 +119,19 @@ function BookContent() {
     try {
       const response = await apiClient.getTripDetails(tripId!)
 
+      // Early return if request failed
       if (!response.success) {
         throw new Error(response.error || 'Failed to fetch trip details')
       }
 
+      // Explicit null check to satisfy TypeScript
       if (!response.data) {
         throw new Error('No trip data received')
       }
 
-      // TypeScript type assertion - data is guaranteed to exist after null check
-      setTripDetails(response.data as TripDetails)
+      // Type assertion after null check - response.data is guaranteed to exist
+      const tripData = response.data as TripDetails
+      setTripDetails(tripData)
     } catch (error: any) {
       console.error('Error fetching trip:', error)
       setError(error.message || 'Failed to load trip details')
