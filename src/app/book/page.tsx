@@ -127,7 +127,8 @@ function BookContent() {
         throw new Error('No trip data received')
       }
 
-      setTripDetails(response.data)
+      // TypeScript type assertion - data is guaranteed to exist after null check
+      setTripDetails(response.data as TripDetails)
     } catch (error: any) {
       console.error('Error fetching trip:', error)
       setError(error.message || 'Failed to load trip details')
