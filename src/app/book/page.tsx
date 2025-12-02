@@ -29,6 +29,8 @@ import { apiClient } from '@/lib/api-client'
 
 export const dynamic = 'force-dynamic'
 
+// Force fresh deployment - TypeScript fixes applied
+
 const bookingSchema = z.object({
   passengerName: z.string().min(2, 'Passenger name must be at least 2 characters'),
   passengerPhone: z.string().min(11, 'Please enter a valid phone number'),
