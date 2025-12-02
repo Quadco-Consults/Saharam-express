@@ -62,6 +62,10 @@ function SearchContent() {
         throw new Error(response.error || 'Failed to search trips')
       }
 
+      if (!response.data) {
+        throw new Error('No search results received')
+      }
+
       setSearchResults(response.data)
     } catch (error: any) {
       console.error('Search error:', error)

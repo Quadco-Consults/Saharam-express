@@ -66,7 +66,7 @@ export default function AuthModal({ isOpen, onClose, mode = 'signin', onSuccess 
     const { error } = await signIn(data.email, data.password)
 
     if (error) {
-      setMessage({ type: 'error', text: error.message })
+      setMessage({ type: 'error', text: error })
       setIsSubmitting(false)
     } else {
       setMessage({ type: 'success', text: 'Successfully signed in!' })

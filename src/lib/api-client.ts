@@ -169,10 +169,16 @@ class APIClient {
         throw new Error('API temporarily unavailable - using offline mode')
       }
 
+      // Create AbortController for timeout
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 8000) // 8 second timeout
+
       const response = await fetch(endpoint, {
         ...options,
-        timeout: 8000, // 8 second timeout
+        signal: controller.signal,
       })
+
+      clearTimeout(timeoutId)
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`)

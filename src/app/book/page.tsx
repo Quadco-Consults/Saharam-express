@@ -22,7 +22,6 @@ import BankTransferPayment from '@/components/BankTransferPayment'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import ClientOnlyOfflineIndicator from '@/components/ClientOnlyOfflineIndicator'
 import { useAuth } from '@/hooks/useAuth'
-import { Trip } from '@/types'
 import { formatDateTime, formatCurrency, formatSeatNumbers } from '@/utils/formatters'
 import { cn } from '@/utils/cn'
 import { paymentManager } from '@/lib/payments/payment-manager'
@@ -118,8 +117,12 @@ function BookContent() {
     try {
       const response = await apiClient.getTripDetails(tripId!)
 
-      if (!response.success || !response.data) {
+      if (!response.success) {
         throw new Error(response.error || 'Failed to fetch trip details')
+      }
+
+      if (!response.data) {
+        throw new Error('No trip data received')
       }
 
       setTripDetails(response.data)
@@ -175,6 +178,10 @@ function BookContent() {
         throw new Error(bookingResponse.error || 'Failed to create booking')
       }
 
+      if (!bookingResponse.data) {
+        throw new Error('No booking data received')
+      }
+
       setCreatedBooking(bookingResponse.data.booking)
 
       // Initialize payment
@@ -182,6 +189,10 @@ function BookContent() {
 
       if (!paymentResponse.success) {
         throw new Error(paymentResponse.error || 'Failed to initialize payment')
+      }
+
+      if (!paymentResponse.data) {
+        throw new Error('No payment data received')
       }
 
       // Handle different payment methods
