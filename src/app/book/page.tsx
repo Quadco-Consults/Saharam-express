@@ -118,7 +118,7 @@ function BookContent() {
     try {
       const response = await apiClient.getTripDetails(tripId!)
 
-      if (!response.success) {
+      if (!response.success || !response.data) {
         throw new Error(response.error || 'Failed to fetch trip details')
       }
 
