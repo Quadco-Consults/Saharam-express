@@ -2,12 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Saharam Express Brand Colors */
+/* Saharam Express Brand Colors - Brown Theme */
 :root {
-  --saharam-primary: #d4741e;
-  --saharam-primary-dark: #a54513;
-  --saharam-gold: #e9b577;
-  --saharam-light: #f9ead6;
+  --saharam-primary: #8B4513;
+  --saharam-primary-dark: #654321;
+  --saharam-gold: #DEB887;
+  --saharam-light: #F5F5DC;
 }
 
 body {
