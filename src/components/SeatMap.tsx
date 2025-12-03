@@ -211,8 +211,8 @@ export default function SeatMap({
 
         {/* Seat selection limit warning */}
         {selectedSeats.length >= maxSeats && (
-          <div className="mt-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
-            <p className="text-sm text-orange-700 text-center">
+          <div className="mt-4 p-3 bg-saharan-50 border border-saharan-200 rounded-lg">
+            <p className="text-sm text-saharan-700 text-center">
               Maximum of {maxSeats} seats can be selected per booking
             </p>
           </div>

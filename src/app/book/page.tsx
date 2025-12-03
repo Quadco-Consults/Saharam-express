@@ -458,7 +458,7 @@ function BookContent() {
                             <div className="flex items-center gap-4">
                               {provider.code === 'paystack' && <CreditCard className="w-8 h-8 text-blue-600" />}
                               {provider.code === 'opay' && <CreditCard className="w-8 h-8 text-green-600" />}
-                              {provider.code === 'bank_transfer' && <Building2 className="w-8 h-8 text-orange-600" />}
+                              {provider.code === 'bank_transfer' && <Building2 className="w-8 h-8 text-saharan-600" />}
 
                               <div>
                                 <h4 className="font-semibold text-gray-900">{provider.name}</h4>

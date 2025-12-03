@@ -250,7 +250,7 @@ export default function AdminVehiclesPage() {
     const daysUntil = Math.ceil((nextMaintenance.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
 
     if (daysUntil < 0) return { status: 'overdue', message: 'Maintenance overdue', color: 'text-red-600' }
-    if (daysUntil <= 7) return { status: 'due', message: `Due in ${daysUntil} days`, color: 'text-orange-600' }
+    if (daysUntil <= 7) return { status: 'due', message: `Due in ${daysUntil} days`, color: 'text-saharan-600' }
     return { status: 'ok', message: `Due in ${daysUntil} days`, color: 'text-green-600' }
   }
 

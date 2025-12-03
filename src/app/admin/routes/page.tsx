@@ -428,7 +428,7 @@ export default function AdminRoutesPage() {
                 </div>
                 <div className="text-center">
                   <p className="text-sm text-gray-600">Upcoming</p>
-                  <p className="font-bold text-orange-600">{route.stats.upcomingTrips}</p>
+                  <p className="font-bold text-saharan-600">{route.stats.upcomingTrips}</p>
                 </div>
               </div>
 

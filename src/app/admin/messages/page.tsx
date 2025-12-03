@@ -147,7 +147,7 @@ export default function AdminMessagesPage() {
       inquiry: 'bg-blue-50 text-blue-700 border-blue-200',
       complaint: 'bg-red-50 text-red-700 border-red-200',
       feedback: 'bg-green-50 text-green-700 border-green-200',
-      support: 'bg-orange-50 text-orange-700 border-orange-200'
+      support: 'bg-saharan-50 text-saharan-700 border-saharan-200'
     }
 
     return (

@@ -88,7 +88,7 @@ export default function LoyaltyPage() {
       case 'silver':
         return <Award className="w-6 h-6 text-gray-600" />
       default:
-        return <Star className="w-6 h-6 text-orange-600" />
+        return <Star className="w-6 h-6 text-saharan-600" />
     }
   }
 
@@ -101,7 +101,7 @@ export default function LoyaltyPage() {
       case 'silver':
         return 'from-gray-500 to-gray-700'
       default:
-        return 'from-orange-500 to-orange-700'
+        return 'from-saharan-500 to-saharan-700'
     }
   }
 

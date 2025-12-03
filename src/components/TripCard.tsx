@@ -93,7 +93,7 @@ export default function TripCard({ trip, onSelect, isSelected = false }: TripCar
         </div>
 
         {isAlmostFull && (
-          <div className="flex items-center gap-1 px-2 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-medium">
+          <div className="flex items-center gap-1 px-2 py-1 bg-saharan-100 text-saharan-700 rounded-full text-xs font-medium">
             <Star className="w-3 h-3" />
             Almost Full
           </div>
@@ -106,7 +106,7 @@ export default function TripCard({ trip, onSelect, isSelected = false }: TripCar
           <div
             className={cn(
               "h-2 rounded-full transition-all",
-              occupancyRate > 80 ? "bg-orange-500" : "bg-green-500"
+              occupancyRate > 80 ? "bg-saharan-500" : "bg-green-500"
             )}
             style={{ width: `${occupancyRate}%` }}
           />

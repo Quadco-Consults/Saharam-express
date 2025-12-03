@@ -128,7 +128,7 @@ export default function AdminAnalyticsPage() {
       blue: 'bg-blue-100 text-blue-600',
       green: 'bg-green-100 text-green-600',
       purple: 'bg-purple-100 text-purple-600',
-      orange: 'bg-orange-100 text-orange-600'
+      orange: 'bg-saharan-100 text-saharan-600'
     }
 
     return (
